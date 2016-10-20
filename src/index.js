@@ -196,4 +196,4 @@ class Element extends HTMLElement {
 
 }
 
-export default Component;
+export default {Component, GlobalElement, Element};

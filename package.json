@@ -1,0 +1,38 @@
+{
+  "name": "marionette.component",
+  "version": "0.1.0",
+  "description": "Reusable components for your marionette application",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel --plugins transform-es2015-modules-umd,transform-es2015-classes src/index.js -o build/index.umd.js && babel src/index.js -o build/index.es6.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jakejarrett/Marionette.Component.git"
+  },
+  "keywords": [
+    "Marionette",
+    "Components",
+    "Shadow",
+    "DOM",
+    "ES6",
+    "Custom",
+    "Elements"
+  ],
+  "author": "Jake Jarrett",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jakejarrett/Marionette.Component/issues"
+  },
+  "homepage": "https://github.com/jakejarrett/Marionette.Component#readme",
+  "dependencies": {
+    "backbone.marionette": "^3.1.0",
+    "backbone.radio": "^2.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-plugin-transform-es2015-classes": "^6.14.0",
+    "babel-plugin-transform-es2015-modules-umd": "^6.12.0",
+    "babel-preset-es2017": "^6.16.0"
+  }
+}

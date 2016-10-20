@@ -144,7 +144,7 @@ class Element extends HTMLElement {
         this.createShadowRoot().innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
 
         /** Reset GlobalElement after we've grabbed all the deets. **/
-        GlobalElement = undefined;
+        if(this.hasUpdated) GlobalElement = undefined;
     }
 
     /**

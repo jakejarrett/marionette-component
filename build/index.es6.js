@@ -1,192 +1,51 @@
-import Marionette, { Object } from "marionette";
+/** Only real dependency atm is backbone radio. **/
 import Radio from "backbone.radio";
+
+// Provide context from one class to another
+var GlobalElement;
 
 /**
  * Marionette Components.
  *
- * Re-usable encapsulated views for use in Marionette.
+ * Re-usable encapsulated views for use in your framework of choice.
  *
  * Based on marionette.component by jfairbank.
  * @see https://github.com/jfairbank/marionette.component
  */
-class Component extends Object {
+class Component {
 
     /**
+     * Constructor
      *
-     * @param model {Backbone.Model} The Backbone model
-     * @param collection {Backbone.Collection} The backbone Collection
+     * @param elementName {Object} The custom dom name for your component.
      * @param element {Object} The passthrough object for constructing the Component View.
+     * @param stylesheet {Object} The stylesheet for your encapsulated component.
+     * @param state {Object} The state object
      */
-    constructor({ model, collection, element } = {}) {
-        super(arguments);
+    constructor({ elementName, element, stylesheet, state } = {}) {
+        if (undefined !== state) this.state = state;
 
-        this.model = model;
-        this.collection = collection;
-
-        this.element = new Element(element);
+        GlobalElement = {
+            elementName: elementName,
+            element: element,
+            stylesheet: stylesheet
+        };
     }
 
     /**
-     * Where we are showing the component.
+     * Return the Element class.
      *
-     * @param region {Element|Marionette.Region} The view we're adding this view into
+     * @returns {Element}
      */
-    showIn(region) {
-        if (this._isShown) {
-            throw new Error("This component is already shown in a region.");
-        }
-
-        if (!region) {
-            throw new Error("Please supply a region to show inside.");
-        }
-
-        this.region = region;
-
-        /** Trigger default marionette events **/
-        this.triggerMethod("before:show");
-
-        this._showView();
-        this._isShown = true;
-
-        this.triggerMethod("show");
-    }
-
-    /**
-     * Destroy the component and its view
-     *
-     * todo- refactor this to support ShadowDOM
-     */
-    destroy() {
-        if (this._isDestroyed) {
-            return;
-        }
-
-        /** Trigger default marionette events **/
-        this.triggerMethod("before:destroy");
-
-        this._destroyViewThroughRegion();
-        this._removeReferences();
-
-        this.triggerMethod("destroy");
-        this.stopListening();
-
-        this._isDestroyed = true;
-    }
-
-    /**
-     * Show the view in the region.
-     *
-     * @private
-     */
-    _showView() {
-        const view = this.view = this._getView();
-
-        this._initializeViewEvents();
-
-        /** Trigger show:view after the view is shown in the region **/
-        this.listenTo(view, "show", _.partial(this.triggerMethod, "show:view"));
-
-        /** Trigger before:show before the region shows the view **/
-        this.triggerMethod("before:show:view");
-
-        /** Show the view in the region **/
-        this.region.show(view);
-
-        /** Destroy the component if the region is emptied because it destroys the view **/
-        this.listenToOnce(this.region, "empty", this.destroy);
-    }
-
-    /**
-     * Get an instance of the view to display
-     *
-     * @returns {Component} Returns an instance of itself.
-     * @private
-     */
-    get _getView() {
-        const ViewClass = this.viewClass;
-
-        if (!ViewClass) {
-            throw new Error("You must specify a viewClass for your component.");
-        }
-
-        return new ViewClass({
-            model: this.model,
-            collection: this.collection
-        });
-    }
-
-    /**
-     * Set up events from the `viewEvents` hash
-     *
-     * @private
-     */
-    _initializeViewEvents() {
-        if (this.viewEvents) {
-            this.bindEvents(this.view, this.viewEvents);
-        }
-    }
-
-    /**
-     * Destroy a view by emptying the region
-     *
-     * @private
-     */
-    _destroyViewThroughRegion() {
-        const region = this.region;
-
-        // Don't do anything if there isn't a region or view.
-        // We need to check the view or we could empty the region before we've
-        // shown the component view. This would destroy an existing view in the
-        // region.
-        if (!region || !this.view) {
-            return;
-        }
-
-        // Remove listeners on region, so we don't call `destroy` a second time
-        this.stopListening(region);
-
-        // Destroy the view by emptying the region
-        region.empty();
-    }
-
-    /**
-     * Remove references to all attached objects
-     *
-     * @private
-     */
-    _removeReferences() {
-        delete this.model;
-        delete this.collection;
-        delete this.region;
-        delete this.view;
-    }
-
-    set element(element) {
-        this._element = element;
-    }
-
     get element() {
-        return this._element;
+        return Element;
     }
 }
 
+/**
+ * Create the custom element with shadow dom support for true encapsulation!
+ */
 class Element extends HTMLElement {
-
-    /**
-     * What type of element we're going to construct
-     *
-     * @param elementName {String} The element name (eg/ login-form)
-     * @param element {HTMLElement} The contents of the component (Pre-rendered)
-     * @param stylesheet {Object} The stylesheet object.
-     */
-    constructor({ elementName, element, stylesheet } = {}) {
-        super(arguments);
-
-        /** Setup initial state **/
-        this._elementName = elementName;
-        this._element = element;
-        this._stylesheet = stylesheet;
-    }
 
     /**
      * Set the element
@@ -207,6 +66,15 @@ class Element extends HTMLElement {
      */
     get element() {
         return this._element;
+    }
+
+    /**
+     * Returns the registered name for this component.
+     *
+     * @returns {*}
+     */
+    get elementName() {
+        return this._elementName;
     }
 
     /**
@@ -267,8 +135,16 @@ class Element extends HTMLElement {
      * When the element is initialized, we'll create the element
      */
     createdCallback() {
+        /** Initial time running, so its not technically updating **/
+        this._element = GlobalElement.element;
+        this._stylesheet = GlobalElement.stylesheet;
+        this._elementName = GlobalElement.elementName;
+
         /** Add the styles directly into the shadow root & then append the rendered template **/
         this.createShadowRoot().innerHTML = `<style>${ this.stylesheet.toString() }</style>${ this.element }`;
+
+        /** Reset GlobalElement after we've grabbed all the deets. **/
+        GlobalElement = undefined;
     }
 
     /**

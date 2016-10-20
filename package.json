@@ -1,8 +1,8 @@
 {
   "name": "marionette.component",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Reusable components for your marionette application",
-  "main": "index.js",
+  "main": "build/index.es6.js",
   "scripts": {
     "build": "babel --plugins transform-es2015-modules-umd,transform-es2015-classes src/index.js -o build/index.umd.js && babel src/index.js -o build/index.es6.js"
   },
@@ -13,8 +13,7 @@
   "keywords": [
     "Marionette",
     "Components",
-    "Shadow",
-    "DOM",
+    "ShadowDOM",
     "ES6",
     "Custom",
     "Elements"
@@ -26,7 +25,6 @@
   },
   "homepage": "https://github.com/jakejarrett/Marionette.Component#readme",
   "dependencies": {
-    "backbone.marionette": "^3.1.0",
     "backbone.radio": "^2.0.0"
   },
   "devDependencies": {

@@ -357,13 +357,7 @@ babylon@^6.11.0:
   version "6.12.0"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.12.0.tgz#953e6202e58062f7f5041fc8037e4bd4e17140a9"
 
-backbone.marionette:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/backbone.marionette/-/backbone.marionette-3.1.0.tgz#0bacee64945eb4deb303e9285ee8c18fd58324a3"
-  dependencies:
-    backbone.radio "^2.0.0"
-
-backbone.radio, backbone.radio@^2.0.0:
+backbone.radio:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/backbone.radio/-/backbone.radio-2.0.0.tgz#bbe8672b373e313f99f36d2fbcf583fe77d04f42"
 

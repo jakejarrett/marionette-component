@@ -23,13 +23,62 @@ class Component {
      * @param state {Object} The state object
      */
     constructor({ elementName, element, stylesheet, state } = {}) {
+        let that = this;
+
         if (undefined !== state) this.state = state;
+        if (undefined === this.events) this.events = {};
 
         GlobalElement = {
             elementName: elementName,
             element: element,
             stylesheet: stylesheet
         };
+
+        this.radioChannel = Radio.channel(`components:${ elementName }`);
+
+        this.radioChannel.on("attached", element => {
+            /** If events object isn't empty **/
+            if (Object.keys(that.events).length !== 0 && that.events.constructor === Object) {
+
+                for (let event in that.events) {
+                    /** Now that the element is attached to the dom, add in the event listeners **/
+                    element.addEventListener(event, e => {
+                        that.radioChannel.trigger("eventListenerAdded", that.events[event], e);
+                    });
+                }
+            }
+        });
+    }
+
+    /**
+     * Initialize the events
+     */
+    initialize() {
+        let that = this;
+        this.radioChannel.on("eventListenerAdded", (event, passthroughEvent) => that[event](passthroughEvent));
+    }
+
+    /**
+     * Add an event listener.
+     *
+     * @param event {String} The event you're listening to
+     * @param method {String} The method that will be called
+     */
+    addEvent(event, method) {
+        this.events[event] = method;
+    }
+
+    /**
+     * Remove an event listener
+     *
+     * @param event
+     * @param method
+     */
+    removeEvent(event, method) {
+        if (undefined !== event && typeof method === "function") {
+            this.element.removeEventListener(event, method);
+            delete this.events[event];
+        }
     }
 
     /**

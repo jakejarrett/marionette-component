@@ -211,11 +211,12 @@
              *
              * @returns {Element}
              */
+            // $FlowIgnore: We don't want to pre-initialize the element!
 
         }, {
             key: "element",
             get: function get() {
-                return new Element();
+                return Element;
             }
         }]);
 

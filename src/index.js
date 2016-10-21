@@ -124,8 +124,9 @@ export class Component {
      *
      * @returns {Element}
      */
+    // $FlowIgnore: We don't want to pre-initialize the element!
     get element () : Element {
-        return new Element;
+        return Element;
     }
 }
 

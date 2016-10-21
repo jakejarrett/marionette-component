@@ -9,11 +9,12 @@ import Radio from "backbone.radio";
  * @param eventName {String} The event you want to bind (EG/ "click div")
  * @returns {Function} The "on" decorator (@on)
  */
-export function on(eventName){
+export function on(eventName) {
     /**
      * Return a decorator function
      */
     return function(target, name, descriptor){
+        console.log(target, name, descriptor);
         if(!target.events) {
             target.events = {};
         }

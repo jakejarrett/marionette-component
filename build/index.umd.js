@@ -16,6 +16,8 @@
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
+    exports.Component = undefined;
+    exports.on = on;
 
     var _backbone2 = _interopRequireDefault(_backbone);
 
@@ -73,6 +75,38 @@
         };
     }();
 
+    /**
+     * Event decorator
+     *
+     * Event listeners for components.
+     *
+     * @param eventName {String} The event you want to bind (EG/ "click div")
+     * @returns {Function} The "on" decorator (@on)
+     */
+    function on(eventName) {
+        /**
+         * Return a decorator function
+         */
+        return function (target, name, descriptor) {
+            if (!target.events) {
+                target.events = {};
+            }
+
+            if (_.isFunction(target.events)) {
+                throw new Error("The on decorator is not compatible with an events method");
+                return;
+            }
+
+            if (!eventName) {
+                throw new Error("The on decorator requires an eventName argument");
+            }
+
+            target.addEvent(eventName, name, target);
+
+            return descriptor;
+        };
+    }
+
     // Provide context from one class to another
     var GlobalElement;
 
@@ -85,12 +119,12 @@
      * @see https://github.com/jfairbank/marionette.component
      */
 
-    let Component = function () {
+    let Component = exports.Component = function () {
 
         /**
          * Constructor
          *
-         * @param elementName {Object} The custom dom name for your component.
+         * @param elementName {string} The custom dom name for your component.
          * @param element {Object} The passthrough object for constructing the Component View.
          * @param stylesheet {Object} The stylesheet for your encapsulated component.
          * @param state {Object} The state object
@@ -138,11 +172,27 @@
                 let that = this;
                 this.radioChannel.on("eventListenerAdded", (event, passthroughEvent) => that[event](passthroughEvent));
             }
+
+            /**
+             * Add an event listener.
+             *
+             * @param event {String} The event you're listening to
+             * @param method {String} The method that will be called
+             */
+
         }, {
             key: "addEvent",
             value: function addEvent(event, method) {
                 this.events[event] = method;
             }
+
+            /**
+             * Remove an event listener
+             *
+             * @param event {String} The event that the method is listening to (EG/ click)
+             * @param method {String} The method you want to remove
+             */
+
         }, {
             key: "removeEvent",
             value: function removeEvent(event, method) {
@@ -151,6 +201,13 @@
                     delete this.events[event];
                 }
             }
+
+            /**
+             * Return the Element class.
+             *
+             * @returns {Element}
+             */
+
         }, {
             key: "element",
             get: function () {
@@ -264,6 +321,4 @@
 
         return Element;
     }(HTMLElement);
-
-    exports.default = Component;
 });

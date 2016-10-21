@@ -1,6 +1,38 @@
 /** Only real dependency atm is backbone radio. **/
 import Radio from "backbone.radio";
 
+/**
+ * Event decorator
+ *
+ * Event listeners for components.
+ *
+ * @param eventName {String} The event you want to bind (EG/ "click div")
+ * @returns {Function} The "on" decorator (@on)
+ */
+export function on(eventName) {
+    /**
+     * Return a decorator function
+     */
+    return function (target, name, descriptor) {
+        if (!target.events) {
+            target.events = {};
+        }
+
+        if (_.isFunction(target.events)) {
+            throw new Error("The on decorator is not compatible with an events method");
+            return;
+        }
+
+        if (!eventName) {
+            throw new Error("The on decorator requires an eventName argument");
+        }
+
+        target.addEvent(eventName, name, target);
+
+        return descriptor;
+    };
+}
+
 // Provide context from one class to another
 var GlobalElement;
 
@@ -12,12 +44,12 @@ var GlobalElement;
  * Based on marionette.component by jfairbank.
  * @see https://github.com/jfairbank/marionette.component
  */
-class Component {
+export let Component = class Component {
 
     /**
      * Constructor
      *
-     * @param elementName {Object} The custom dom name for your component.
+     * @param elementName {string} The custom dom name for your component.
      * @param element {Object} The passthrough object for constructing the Component View.
      * @param stylesheet {Object} The stylesheet for your encapsulated component.
      * @param state {Object} The state object
@@ -73,8 +105,8 @@ class Component {
     /**
      * Remove an event listener
      *
-     * @param event
-     * @param method
+     * @param event {String} The event that the method is listening to (EG/ click)
+     * @param method {String} The method you want to remove
      */
     removeEvent(event, method) {
         if (undefined !== event && typeof method === "function") {
@@ -91,12 +123,12 @@ class Component {
     get element() {
         return Element;
     }
-}
+};
 
 /**
  * Create the custom element with shadow dom support for true encapsulation!
  */
-class Element extends HTMLElement {
+let Element = class Element extends HTMLElement {
 
     /**
      * Set the element
@@ -122,7 +154,7 @@ class Element extends HTMLElement {
     /**
      * Returns the registered name for this component.
      *
-     * @returns {*}
+     * @returns {String}
      */
     get elementName() {
         return this._elementName;
@@ -131,7 +163,7 @@ class Element extends HTMLElement {
     /**
      * Returns the previous element (Only set after update).
      *
-     * @returns {*|HTMLElement}
+     * @returns {HTMLElement}
      */
     get previousElement() {
         return this._previousElement;
@@ -244,6 +276,4 @@ class Element extends HTMLElement {
         if (this.hasUpdated) this.shadowRoot.innerHTML = `<style>${ this.stylesheet.toString() }</style>${ this.element }`;
     }
 
-}
-
-export default Component;
+};

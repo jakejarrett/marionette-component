@@ -1,3 +1,5 @@
+/* @flow */
+
 /** Only real dependency atm is backbone radio. **/
 import Radio from "backbone.radio";
 
@@ -9,23 +11,16 @@ import Radio from "backbone.radio";
  * @param eventName {String} The event you want to bind (EG/ "click div")
  * @returns {Function} The "on" decorator (@on)
  */
-export function on(eventName) {
+export function on(eventName: string) {
     /**
      * Return a decorator function
      */
-    return function(target, name, descriptor){
-        if(!target.events) {
-            target.events = {};
-        }
+    return function(target: Object, name: string, descriptor: Object){
 
-        if(_.isFunction(target.events)) {
-            throw new Error("The on decorator is not compatible with an events method");
-            return;
-        }
-
-        if(!eventName) {
-            throw new Error("The on decorator requires an eventName argument");
-        }
+        /** Guard conditions **/
+        if(!target.events) target.events = {};
+        if(typeof target.events === "function") throw new Error("The on decorator is not compatible with an events method");
+        if(!eventName) throw new Error("The on decorator requires an eventName argument");
 
         target.addEvent(eventName, name, target);
 
@@ -34,7 +29,7 @@ export function on(eventName) {
 }
 
 // Provide context from one class to another
-var GlobalElement;
+var GlobalElement: Object;
 
 /**
  * Marionette Components.
@@ -47,6 +42,13 @@ var GlobalElement;
 export class Component {
 
     /**
+     * Setup types for variables.
+     */
+    radioChannel: Object;
+    state: Object;
+    events: Object;
+
+    /**
      * Constructor
      *
      * @param elementName {string} The custom dom name for your component.
@@ -54,8 +56,8 @@ export class Component {
      * @param stylesheet {Object} The stylesheet for your encapsulated component.
      * @param state {Object} The state object
      */
-    constructor({ elementName, element, stylesheet, state } = {}) {
-        let that = this;
+    constructor(elementName: string, element: Object, stylesheet: Object, state: Object) {
+        let that: Object = this;
 
         if (undefined !== state) this.state = state;
         if (undefined === this.events) this.events = {};
@@ -90,6 +92,7 @@ export class Component {
      */
     initialize () {
         let that = this;
+        // $FlowIgnore: This is registered dynamically, so static typing can't detect this.
         this.radioChannel.on("eventListenerTriggered", (event, passthroughEvent) => that[event](passthroughEvent));
     }
 
@@ -99,7 +102,7 @@ export class Component {
      * @param event {String} The event you're listening to
      * @param method {String} The method that will be called
      */
-    addEvent(event, method) {
+    addEvent(event: String, method: string) {
         this.events[event] = method;
     }
 
@@ -109,7 +112,7 @@ export class Component {
      * @param event {String} The event that the method is listening to (EG/ click)
      * @param method {String} The method you want to remove
      */
-    removeEvent (event, method) {
+    removeEvent (event: string, method: string) {
         if(undefined !== event && typeof method === "function") {
             this.element.removeEventListener(event, method);
             delete this.events[event];
@@ -121,8 +124,8 @@ export class Component {
      *
      * @returns {Element}
      */
-    get element () {
-        return Element;
+    get element () : Element {
+        return new Element;
     }
 }
 
@@ -132,11 +135,21 @@ export class Component {
 class Element extends HTMLElement {
 
     /**
+     * Setup types for variables.
+     */
+    _previousElement: HTMLElement;
+    _element: HTMLElement;
+    _elementName: string;
+    _previousStylesheet: Object;
+    _stylesheet: Object;
+    _updated: boolean;
+
+    /**
      * Set the element
      *
      * @param updatedElement {HTMLElement} The new element you're setting
      */
-    set element (updatedElement) {
+    set element (updatedElement: HTMLElement) {
         this.hasUpdated = true;
         this._previousElement = this._element;
 
@@ -175,7 +188,7 @@ class Element extends HTMLElement {
      *
      * @param stylesheet {Object}
      */
-    set stylesheet (stylesheet) {
+    set stylesheet (stylesheet: Object) {
         this.hasUpdated = true;
         this._previousStylesheet = this._stylesheet;
 
@@ -196,10 +209,8 @@ class Element extends HTMLElement {
      *
      * @param updated {boolean}
      */
-    set hasUpdated (updated) {
-        if(typeof updated  !== "boolean") {
-            throw new TypeError("Updated can only be a boolean type");
-        }
+    set hasUpdated (updated: boolean) {
+        if(typeof updated  !== "boolean") throw new TypeError("Updated can only be a boolean type");
 
         this._updated = updated;
 
@@ -225,10 +236,8 @@ class Element extends HTMLElement {
         this._elementName = GlobalElement.elementName;
 
         /** Add the styles directly into the shadow root & then append the rendered template **/
+        // $FlowIgnore: Not part of Flow type yet
         this.createShadowRoot().innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
-
-        /** Reset GlobalElement after we've grabbed all the deets. **/
-        if(this.hasUpdated) GlobalElement = undefined;
     }
 
     /**
@@ -245,7 +254,7 @@ class Element extends HTMLElement {
      * @param oldValue {String} Old value of the attribute
      * @param newValue {String} New value of the attribute
      */
-    attributeChangedCallback (attrName, oldValue, newValue) {
+    attributeChangedCallback (attrName: string, oldValue: string, newValue: string) {
         Radio.channel(`components:${this._elementName}`).trigger("attributeChanged", {
             attributeName: attrName,
             previousAttribute: oldValue,
@@ -267,13 +276,14 @@ class Element extends HTMLElement {
      * @param updatedStylesheet {Object} The new stylesheet
      * @public
      */
-    updateElement (updatedElement, updatedStylesheet) {
+    updateElement (updatedElement: HTMLElement, updatedStylesheet: Object) {
 
         /** Only update if we were passed data **/
         if(undefined !== updatedElement) this.element = updatedElement;
         if(undefined !== updatedElement) this.stylesheet = updatedStylesheet;
 
         /** If we've triggered a hasUpdated method **/
+        // $FlowIgnore: Not part of Flow type yet
         if (this.hasUpdated) this.shadowRoot.innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
 
     }

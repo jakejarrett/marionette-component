@@ -88,19 +88,11 @@
          * Return a decorator function
          */
         return function (target, name, descriptor) {
-            console.log(target, name, descriptor);
-            if (!target.events) {
-                target.events = {};
-            }
 
-            if (_.isFunction(target.events)) {
-                throw new Error("The on decorator is not compatible with an events method");
-                return;
-            }
-
-            if (!eventName) {
-                throw new Error("The on decorator requires an eventName argument");
-            }
+            /** Guard conditions **/
+            if (!target.events) target.events = {};
+            if (typeof target.events === "function") throw new Error("The on decorator is not compatible with an events method");
+            if (!eventName) throw new Error("The on decorator requires an eventName argument");
 
             target.addEvent(eventName, name, target);
 
@@ -177,6 +169,11 @@
          */
 
 
+        /**
+         * Setup types for variables.
+         */
+
+
         _createClass(Component, [{
             key: "initialize",
             value: function initialize() {
@@ -249,10 +246,8 @@
                 this._elementName = GlobalElement.elementName;
 
                 /** Add the styles directly into the shadow root & then append the rendered template **/
+                // $FlowIgnore: Not part of Flow type yet
                 this.createShadowRoot().innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element;
-
-                /** Reset GlobalElement after we've grabbed all the deets. **/
-                if (this.hasUpdated) GlobalElement = undefined;
             }
         }, {
             key: "attachedCallback",
@@ -282,6 +277,7 @@
                 if (undefined !== updatedElement) this.stylesheet = updatedStylesheet;
 
                 /** If we've triggered a hasUpdated method **/
+                // $FlowIgnore: Not part of Flow type yet
                 if (this.hasUpdated) this.shadowRoot.innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element;
             }
         }, {
@@ -319,9 +315,7 @@
         }, {
             key: "hasUpdated",
             set: function set(updated) {
-                if (typeof updated !== "boolean") {
-                    throw new TypeError("Updated can only be a boolean type");
-                }
+                if (typeof updated !== "boolean") throw new TypeError("Updated can only be a boolean type");
 
                 this._updated = updated;
 

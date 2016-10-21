@@ -117,19 +117,12 @@
         /**
          * Constructor
          *
-         * @param elementName {string} The custom dom name for your component.
-         * @param element {Object} The passthrough object for constructing the Component View.
+         * @param elementName {string} The name for your custom element (Web Component).
+         * @param element {Object} The pass through object for constructing the Component View.
          * @param stylesheet {Object} The stylesheet for your encapsulated component.
          * @param state {Object} The state object
          */
-        function Component() {
-            var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-            var elementName = _ref.elementName;
-            var element = _ref.element;
-            var stylesheet = _ref.stylesheet;
-            var state = _ref.state;
-
+        function Component(elementName, element, stylesheet, state) {
             _classCallCheck(this, Component);
 
             var that = this;
@@ -178,6 +171,7 @@
             key: "initialize",
             value: function initialize() {
                 var that = this;
+                // $FlowIgnore: This is registered dynamically, so static typing can't detect this.
                 this.radioChannel.on("eventListenerTriggered", function (event, passthroughEvent) {
                     return that[event](passthroughEvent);
                 });
@@ -221,7 +215,7 @@
         }, {
             key: "element",
             get: function get() {
-                return Element;
+                return new Element();
             }
         }]);
 

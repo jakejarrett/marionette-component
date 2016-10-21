@@ -1,10 +1,11 @@
 {
   "name": "marionette.component",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Reusable components for your marionette application",
   "main": "build/index.min.js",
   "scripts": {
-    "build": "babel src/index.js -o build/index.js && uglifyjs --compress --mangle build/index.js --output build/index.min.js"
+    "build": "cp src/index.js build/index.js.flow && babel src/index.js -o build/index.js && uglifyjs build/index.js --output build/index.min.js --compress --mangle",
+    "test": "eslint src/* && flow check src/*"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
+    "babel-eslint": "^7.0.0",
     "babel-loader": "^6.0.0",
     "babel-plugin-syntax-decorators": "^6.13.0",
     "babel-plugin-syntax-flow": "^6.13.0",
@@ -39,6 +41,8 @@
     "babel-plugin-transform-flow-strip-types": "^6.14.0",
     "babel-plugin-transform-function-bind": "^6.8.0",
     "babel-preset-es2015": "^6.16.0",
+    "eslint": "^3.8.1",
+    "eslint-plugin-flowtype": "^2.20.0",
     "flow-bin": "^0.33.0",
     "uglify-js": "^2.7.3"
   }

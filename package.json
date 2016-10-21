@@ -2,7 +2,7 @@
   "name": "marionette.component",
   "version": "0.1.5",
   "description": "Reusable components for your marionette application",
-  "main": "build/index.js",
+  "main": "build/index.min.js",
   "scripts": {
     "build": "babel src/index.js -o build/index.js && uglifyjs --compress --mangle build/index.js --output build/index.min.js"
   },

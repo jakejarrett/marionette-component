@@ -23,16 +23,12 @@ class DemoComponent extends Component {
         const renderedTemplate = _.template(Template)();
 
         /** Initialize component **/
-        super({
-            elementName: elementName,
-            element: renderedTemplate,
-            stylesheet: Styles
-        });
+        super(elementName, renderedTemplate, Styles);
 
         return this.element;
     }
 
-    /** Custom annotation - This hooks into this.events **/
+    /** Custom annotation - This hooks into this.events (You have to support compiling annotations) **/
     @on("click")
     onUserClick (event) {
         console.log("hello", event);

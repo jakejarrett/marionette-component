@@ -76,7 +76,7 @@ export class Component {
                 for (let event in that.events) {
                     /** Now that the element is attached to the dom, add in the event listeners **/
                     element.addEventListener(event, (e) => {
-                        that.radioChannel.trigger("eventListenerAdded", that.events[event], e);
+                        that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                     });
                 }
 
@@ -91,7 +91,7 @@ export class Component {
      */
     initialize () {
         let that = this;
-        this.radioChannel.on("eventListenerAdded", (event, passthroughEvent) => that[event](passthroughEvent));
+        this.radioChannel.on("eventListenerTriggered", (event, passthroughEvent) => that[event](passthroughEvent));
     }
 
     /**

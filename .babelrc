@@ -1,4 +1,11 @@
 {
-  "presets": ["es2017"],
-  "plugins": ["transform-decorators-legacy", "syntax-decorators", "transform-decorators", "transform-function-bind"]
+  "presets": ["es2015"],
+  "plugins": [
+    "transform-decorators-legacy",
+    "syntax-decorators",
+    "transform-decorators",
+    "transform-function-bind",
+    "babel-plugin-transform-es2015-classes",
+    "babel-plugin-transform-es2015-modules-umd"
+  ]
 }

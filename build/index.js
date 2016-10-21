@@ -88,6 +88,7 @@
          * Return a decorator function
          */
         return function (target, name, descriptor) {
+            console.log(target, name, descriptor);
             if (!target.events) {
                 target.events = {};
             }
@@ -119,7 +120,7 @@
      * @see https://github.com/jfairbank/marionette.component
      */
 
-    let Component = exports.Component = function () {
+    var Component = exports.Component = function () {
 
         /**
          * Constructor
@@ -129,10 +130,17 @@
          * @param stylesheet {Object} The stylesheet for your encapsulated component.
          * @param state {Object} The state object
          */
-        function Component({ elementName, element, stylesheet, state } = {}) {
+        function Component() {
+            var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+            var elementName = _ref.elementName;
+            var element = _ref.element;
+            var stylesheet = _ref.stylesheet;
+            var state = _ref.state;
+
             _classCallCheck(this, Component);
 
-            let that = this;
+            var that = this;
 
             if (undefined !== state) this.state = state;
             if (undefined === this.events) this.events = {};
@@ -143,17 +151,20 @@
                 stylesheet: stylesheet
             };
 
-            this.radioChannel = _backbone2.default.channel(`components:${ elementName }`);
+            this.radioChannel = _backbone2.default.channel("components:" + elementName);
 
-            this.radioChannel.on("attached", element => {
+            this.radioChannel.on("attached", function (element) {
                 /** If events object isn't empty **/
                 if (Object.keys(that.events).length !== 0 && that.events.constructor === Object) {
-
-                    for (let event in that.events) {
+                    var _loop = function _loop(event) {
                         /** Now that the element is attached to the dom, add in the event listeners **/
-                        element.addEventListener(event, e => {
-                            that.radioChannel.trigger("eventListenerAdded", that.events[event], e);
+                        element.addEventListener(event, function (e) {
+                            that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                         });
+                    };
+
+                    for (var event in that.events) {
+                        _loop(event);
                     }
                 }
             });
@@ -169,8 +180,10 @@
         _createClass(Component, [{
             key: "initialize",
             value: function initialize() {
-                let that = this;
-                this.radioChannel.on("eventListenerAdded", (event, passthroughEvent) => that[event](passthroughEvent));
+                var that = this;
+                this.radioChannel.on("eventListenerTriggered", function (event, passthroughEvent) {
+                    return that[event](passthroughEvent);
+                });
             }
 
             /**
@@ -210,7 +223,7 @@
 
         }, {
             key: "element",
-            get: function () {
+            get: function get() {
                 return Element;
             }
         }]);
@@ -218,7 +231,7 @@
         return Component;
     }();
 
-    let Element = function (_HTMLElement) {
+    var Element = function (_HTMLElement) {
         _inherits(Element, _HTMLElement);
 
         function Element() {
@@ -236,7 +249,7 @@
                 this._elementName = GlobalElement.elementName;
 
                 /** Add the styles directly into the shadow root & then append the rendered template **/
-                this.createShadowRoot().innerHTML = `<style>${ this.stylesheet.toString() }</style>${ this.element }`;
+                this.createShadowRoot().innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element;
 
                 /** Reset GlobalElement after we've grabbed all the deets. **/
                 if (this.hasUpdated) GlobalElement = undefined;
@@ -244,12 +257,12 @@
         }, {
             key: "attachedCallback",
             value: function attachedCallback() {
-                _backbone2.default.channel(`components:${ this._elementName }`).trigger("attached", this);
+                _backbone2.default.channel("components:" + this._elementName).trigger("attached", this);
             }
         }, {
             key: "attributeChangedCallback",
             value: function attributeChangedCallback(attrName, oldValue, newValue) {
-                _backbone2.default.channel(`components:${ this._elementName }`).trigger("attributeChanged", {
+                _backbone2.default.channel("components:" + this._elementName).trigger("attributeChanged", {
                     attributeName: attrName,
                     previousAttribute: oldValue,
                     newAttribute: newValue
@@ -258,7 +271,7 @@
         }, {
             key: "detachedCallback",
             value: function detachedCallback() {
-                _backbone2.default.channel(`components:${ this._elementName }`).trigger("detached");
+                _backbone2.default.channel("components:" + this._elementName).trigger("detached");
             }
         }, {
             key: "updateElement",
@@ -269,52 +282,52 @@
                 if (undefined !== updatedElement) this.stylesheet = updatedStylesheet;
 
                 /** If we've triggered a hasUpdated method **/
-                if (this.hasUpdated) this.shadowRoot.innerHTML = `<style>${ this.stylesheet.toString() }</style>${ this.element }`;
+                if (this.hasUpdated) this.shadowRoot.innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element;
             }
         }, {
             key: "element",
-            set: function (updatedElement) {
+            set: function set(updatedElement) {
                 this.hasUpdated = true;
                 this._previousElement = this._element;
 
                 this._element = updatedElement;
             },
-            get: function () {
+            get: function get() {
                 return this._element;
             }
         }, {
             key: "elementName",
-            get: function () {
+            get: function get() {
                 return this._elementName;
             }
         }, {
             key: "previousElement",
-            get: function () {
+            get: function get() {
                 return this._previousElement;
             }
         }, {
             key: "stylesheet",
-            set: function (stylesheet) {
+            set: function set(stylesheet) {
                 this.hasUpdated = true;
                 this._previousStylesheet = this._stylesheet;
 
                 this._stylesheet = stylesheet;
             },
-            get: function () {
+            get: function get() {
                 return this._stylesheet;
             }
         }, {
             key: "hasUpdated",
-            set: function (updated) {
+            set: function set(updated) {
                 if (typeof updated !== "boolean") {
                     throw new TypeError("Updated can only be a boolean type");
                 }
 
                 this._updated = updated;
 
-                if (updated) _backbone2.default.channel(`components:${ this._elementName }`).trigger("updated");
+                if (updated) _backbone2.default.channel("components:" + this._elementName).trigger("updated");
             },
-            get: function () {
+            get: function get() {
                 return this._updated;
             }
         }]);

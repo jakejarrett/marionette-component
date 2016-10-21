@@ -14,7 +14,6 @@ export function on(eventName) {
      * Return a decorator function
      */
     return function(target, name, descriptor){
-        console.log(target, name, descriptor);
         if(!target.events) {
             target.events = {};
         }

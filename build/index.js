@@ -319,6 +319,11 @@
             get: function get() {
                 return this._updated;
             }
+        }, {
+            key: "radio",
+            get: function get() {
+                return _backbone2.default.channel("components:" + this._elementName);
+            }
         }]);
 
         return Element;

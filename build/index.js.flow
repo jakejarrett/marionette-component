@@ -228,6 +228,15 @@ class Element extends HTMLElement {
     }
 
     /**
+     * Get the instance of the radio channel that's used to communicate events.
+     *
+     * @returns {Backbone.Radio} An instance of Backbone radio.
+     */
+    get radio () {
+        return Radio.channel(`components:${this._elementName}`);
+    }
+
+    /**
      * When the element is initialized, we'll create the element
      */
     createdCallback () {

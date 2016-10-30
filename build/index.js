@@ -218,6 +218,19 @@
             get: function get() {
                 return Element;
             }
+
+            /**
+             * Return the Element class.
+             *
+             * @returns {Element}
+             */
+            // $FlowIgnore: We don't want to pre-initialize the element!
+            ,
+            set: function set(elem) {
+                Element = elem;
+
+                return Element;
+            }
         }]);
 
         return Component;

@@ -146,7 +146,7 @@
                         var elem = void 0;
 
                         if (eventArray.length <= 2 && eventArray[1] !== undefined) {
-                            elem = element.shadowRoot.querySelector(evtArr[1]);
+                            elem = element.shadowRoot.querySelector(eventArray[1]);
                         } else {
                             elem = element;
                         }

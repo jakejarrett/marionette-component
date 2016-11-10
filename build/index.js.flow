@@ -75,8 +75,19 @@ export class Component {
             if(Object.keys(that.events).length !== 0 && that.events.constructor === Object) {
 
                 for (let event in that.events) {
+                    const eventArray = event.split(" ");
+                    let elem;
+
+                    if(eventArray.length <= 2 && eventArray[1] !== undefined) {
+                        elem = element.shadowRoot.querySelector(evtArr[1]);
+                    } else {
+                        elem = element;
+                    }
+
+                    console.log(elem);
+
                     /** Now that the element is attached to the dom, add in the event listeners **/
-                    element.addEventListener(event, (e) => {
+                    elem.addEventListener(eventArray[0], function (e) {
                         that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                     });
                 }

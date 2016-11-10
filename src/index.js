@@ -139,6 +139,18 @@ export class Component {
     get element () : Element {
         return Element;
     }
+
+    /**
+     * Return the Element class.
+     *
+     * @returns {Element}
+     */
+    // $FlowIgnore: We don't want to pre-initialize the element!
+    set element (elem) : Element {
+        Element = elem;
+
+        return Element;
+    }
 }
 
 /**

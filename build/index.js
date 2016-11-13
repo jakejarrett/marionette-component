@@ -159,19 +159,28 @@
                     if (Object.keys(that.events).length !== 0 && that.events.constructor === Object) {
                         var _loop = function _loop(event) {
                             var eventArray = event.split(" ");
-                            var elem = void 0;
 
-                            if (eventArray.length <= 2 && eventArray[1] !== undefined) {
-                                /** Now that the element is attached to the dom, add in the event listeners **/
-                                element.shadowRoot.querySelector(eventArray[1]).addEventListener(eventArray[0], function (e) {
+                            /** Now that the element is attached to the dom, add in the event listeners **/
+                            element.addEventListener(eventArray[0], function (e) {
+                                if (eventArray.length <= 2 && eventArray[1] !== undefined) {
+                                    if (element.shadowRoot.querySelector(eventArray[1]).length <= 1) {
+
+                                        // Only run if we've matched the same element.
+                                        if (e.path && e.path[0] === element.shadowRoot.querySelector(eventArray[1])) {
+                                            that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
+                                        }
+                                    } else {
+                                        element.shadowRoot.querySelectorAll(eventArray[1]).forEach(function (elem) {
+                                            // Only run if we've matched the same element.
+                                            if (e.path && e.path[0] === elem) {
+                                                that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
+                                            }
+                                        });
+                                    }
+                                } else {
                                     that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
-                                });
-                            } else {
-                                /** Now that the element is attached to the dom, add in the event listeners **/
-                                element.addEventListener(eventArray[0], function (e) {
-                                    that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
-                                });
-                            }
+                                }
+                            });
                         };
 
                         for (var event in that.events) {

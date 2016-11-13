@@ -83,19 +83,28 @@ export class Component {
 
                 for (let event in that.events) {
                     const eventArray = event.split(" ");
-                    let elem;
 
-                    if(eventArray.length <= 2 && eventArray[1] !== undefined) {
-                        /** Now that the element is attached to the dom, add in the event listeners **/
-                        element.shadowRoot.querySelector(eventArray[1]).addEventListener(eventArray[0], e => {
+                    /** Now that the element is attached to the dom, add in the event listeners **/
+                    element.addEventListener(eventArray[0], function (e) {
+                        if (eventArray.length <= 2 && eventArray[1] !== undefined) {
+                            if(element.shadowRoot.querySelector(eventArray[1]).length <= 1) {
+
+                                // Only run if we've matched the same element.
+                                if(e.path && e.path[0] === element.shadowRoot.querySelector(eventArray[1])) {
+                                    that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
+                                }
+                            } else {
+                                element.shadowRoot.querySelectorAll(eventArray[1]).forEach(function(elem){
+                                    // Only run if we've matched the same element.
+                                    if(e.path && e.path[0] === elem) {
+                                        that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
+                                    }
+                                })
+                            }
+                        } else {
                             that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
-                        });
-                    } else {
-                        /** Now that the element is attached to the dom, add in the event listeners **/
-                        element.addEventListener(eventArray[0], e => {
-                            that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
-                        });
-                    }
+                        }
+                    });
                 }
 
             }

@@ -91,7 +91,7 @@
 
             /** Guard conditions **/
             if (!target.events) target.events = {};
-            if (typeof target.events === "function") throw new Error("The on decorator is not compatible with an events method");
+            if (typeof target.events === "function") throw new Error("The on decorator is only compatible with an events object");
             if (!eventName) throw new Error("The on decorator requires an eventName argument");
 
             target.addEvent(eventName, name, target);
@@ -116,60 +116,21 @@
 
         /**
          * Constructor
+         */
+        function Component() {
+            _classCallCheck(this, Component);
+
+            this.radioChannel = _backbone2.default.channel("components:" + elementName);
+            this.initialize();
+        }
+
+        /**
+         * Render the component.
          *
          * @param elementName {string} The name for your custom element (Web Component).
          * @param element {Object} The pass through object for constructing the Component View.
          * @param stylesheet {Object} The stylesheet for your encapsulated component.
          * @param state {Object} The state object
-         */
-        function Component(elementName, element, stylesheet, state) {
-            _classCallCheck(this, Component);
-
-            var that = this;
-
-            if (undefined !== state) this.state = state;
-            if (undefined === this.events) this.events = {};
-
-            GlobalElement = {
-                elementName: elementName,
-                element: element,
-                stylesheet: stylesheet
-            };
-
-            this.radioChannel = _backbone2.default.channel("components:" + elementName);
-
-            this.radioChannel.on("attached", function (element) {
-                /** If events object isn't empty **/
-                if (Object.keys(that.events).length !== 0 && that.events.constructor === Object) {
-                    var _loop = function _loop(event) {
-                        var eventArray = event.split(" ");
-                        var elem = void 0;
-
-                        if (eventArray.length <= 2 && eventArray[1] !== undefined) {
-                            elem = element.shadowRoot.querySelector(eventArray[1]);
-                        } else {
-                            elem = element;
-                        }
-
-                        console.log(elem);
-
-                        /** Now that the element is attached to the dom, add in the event listeners **/
-                        elem.addEventListener(eventArray[0], function (e) {
-                            that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
-                        });
-                    };
-
-                    for (var event in that.events) {
-                        _loop(event);
-                    }
-                }
-            });
-
-            this.initialize();
-        }
-
-        /**
-         * Initialize the events
          */
 
 
@@ -179,6 +140,52 @@
 
 
         _createClass(Component, [{
+            key: "renderComponent",
+            value: function renderComponent(elementName, element, stylesheet, state) {
+                /** Setup Component **/
+                var that = this;
+
+                if (undefined !== state) this.state = state;
+                if (undefined === this.events) this.events = {};
+
+                GlobalElement = {
+                    elementName: elementName,
+                    element: element,
+                    stylesheet: stylesheet
+                };
+
+                this.radioChannel.on("attached", function (element) {
+                    /** If events object isn't empty **/
+                    if (Object.keys(that.events).length !== 0 && that.events.constructor === Object) {
+                        var _loop = function _loop(event) {
+                            var eventArray = event.split(" ");
+                            var elem = void 0;
+
+                            if (eventArray.length <= 2 && eventArray[1] !== undefined) {
+                                /** Now that the element is attached to the dom, add in the event listeners **/
+                                element.shadowRoot.querySelector(eventArray[1]).addEventListener(eventArray[0], function (e) {
+                                    that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
+                                });
+                            } else {
+                                /** Now that the element is attached to the dom, add in the event listeners **/
+                                element.addEventListener(eventArray[0], function (e) {
+                                    that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
+                                });
+                            }
+                        };
+
+                        for (var event in that.events) {
+                            _loop(event);
+                        }
+                    }
+                });
+            }
+
+            /**
+             * Initialize the events
+             */
+
+        }, {
             key: "initialize",
             value: function initialize() {
                 var that = this;
@@ -232,15 +239,11 @@
 
             /**
              * Return the Element class.
-             *
-             * @returns {Element}
              */
             // $FlowIgnore: We don't want to pre-initialize the element!
             ,
             set: function set(elem) {
                 Element = elem;
-
-                return Element;
             }
         }]);
 

@@ -19,7 +19,7 @@ export function on(eventName: string) {
 
         /** Guard conditions **/
         if(!target.events) target.events = {};
-        if(typeof target.events === "function") throw new Error("The on decorator is not compatible with an events method");
+        if(typeof target.events === "function") throw new Error("The on decorator is only compatible with an events object");
         if(!eventName) throw new Error("The on decorator requires an eventName argument");
 
         target.addEvent(eventName, name, target);
@@ -50,13 +50,22 @@ export class Component {
 
     /**
      * Constructor
+     */
+    constructor() {
+        this.radioChannel = Radio.channel(`components:${elementName}`);
+        this.initialize();
+    }
+
+    /**
+     * Render the component.
      *
      * @param elementName {string} The name for your custom element (Web Component).
      * @param element {Object} The pass through object for constructing the Component View.
      * @param stylesheet {Object} The stylesheet for your encapsulated component.
      * @param state {Object} The state object
      */
-    constructor(elementName: string, element: Object, stylesheet: Object, state: Object) {
+    renderComponent (elementName: string, element: Object, stylesheet: Object, state: Object) {
+        /** Setup Component **/
         let that: Object = this;
 
         if (undefined !== state) this.state = state;
@@ -68,8 +77,6 @@ export class Component {
             stylesheet: stylesheet
         };
 
-        this.radioChannel = Radio.channel(`components:${elementName}`);
-
         this.radioChannel.on("attached", element => {
             /** If events object isn't empty **/
             if(Object.keys(that.events).length !== 0 && that.events.constructor === Object) {
@@ -79,23 +86,20 @@ export class Component {
                     let elem;
 
                     if(eventArray.length <= 2 && eventArray[1] !== undefined) {
-                        elem = element.shadowRoot.querySelector(eventArray[1]);
+                        /** Now that the element is attached to the dom, add in the event listeners **/
+                        element.shadowRoot.querySelector(eventArray[1]).addEventListener(eventArray[0], e => {
+                            that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
+                        });
                     } else {
-                        elem = element;
+                        /** Now that the element is attached to the dom, add in the event listeners **/
+                        element.addEventListener(eventArray[0], e => {
+                            that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
+                        });
                     }
-
-                    console.log(elem);
-
-                    /** Now that the element is attached to the dom, add in the event listeners **/
-                    elem.addEventListener(eventArray[0], function (e) {
-                        that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
-                    });
                 }
 
             }
         });
-
-        this.initialize();
     }
 
     /**
@@ -142,14 +146,10 @@ export class Component {
 
     /**
      * Return the Element class.
-     *
-     * @returns {Element}
      */
     // $FlowIgnore: We don't want to pre-initialize the element!
-    set element (elem) : Element {
+    set element (elem) {
         Element = elem;
-
-        return Element;
     }
 }
 

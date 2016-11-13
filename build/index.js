@@ -117,7 +117,7 @@
         /**
          * Constructor
          */
-        function Component() {
+        function Component(elementName) {
             _classCallCheck(this, Component);
 
             this.radioChannel = _backbone2.default.channel("components:" + elementName);

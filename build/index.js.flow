@@ -51,7 +51,7 @@ export class Component {
     /**
      * Constructor
      */
-    constructor() {
+    constructor(elementName) {
         this.radioChannel = Radio.channel(`components:${elementName}`);
         this.initialize();
     }

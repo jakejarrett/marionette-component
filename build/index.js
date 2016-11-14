@@ -116,6 +116,8 @@
 
         /**
          * Constructor
+         *
+         * @param elementName {String} The name of the element (We register the radio channel with it here)
          */
         function Component(elementName) {
             _classCallCheck(this, Component);

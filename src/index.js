@@ -50,8 +50,10 @@ export class Component {
 
     /**
      * Constructor
+     *
+     * @param elementName {String} The name of the element (We register the radio channel with it here)
      */
-    constructor(elementName) {
+    constructor(elementName: string) {
         this.radioChannel = Radio.channel(`components:${elementName}`);
         this.initialize();
     }
@@ -99,7 +101,7 @@ export class Component {
                                     if(e.path && e.path[0] === elem) {
                                         that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                                     }
-                                })
+                                });
                             }
                         } else {
                             that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
@@ -157,7 +159,7 @@ export class Component {
      * Return the Element class.
      */
     // $FlowIgnore: We don't want to pre-initialize the element!
-    set element (elem) {
+    set element (elem: HTMLElement) {
         Element = elem;
     }
 }

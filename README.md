@@ -2,13 +2,11 @@
 
 Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.1 recommended.`
 
-# Usage
-Here's a demo usage (Using Webpack)
-
-<small>**note- i still have to finish writing a demo for this**</small>
+# Usage <small><small>**This is subject to change**</small></small>
 ```Javascript
 import { Component, on } from "marionette.component";
 import Template from "./index.html";
+// This transforms into <style>:host{/* styling */}</style>
 import Styles from "!css?modules!sass!./style.scss";
 
 /**
@@ -19,19 +17,45 @@ class DemoComponent extends Component {
     /**
      * Setup our component.
      */
-    constructor (elementName) {
-        const renderedTemplate = _.template(Template)();
-
+    constructor (elementName, props) {
         /** Initialize component **/
-        super(elementName, renderedTemplate, Styles);
+        super(elementName);
 
+        // Call render
+        this.render(elementName, props);
+
+        // Return the element
         return this.element;
     }
 
+    /**
+     * The render method, we'll define what is being rendered onto the dom here.
+     */
+    render (elementName, props) {
+        /**
+         * Assume that we're pre-filling the elements with this object.
+         */
+        let data = {
+            elements: {
+                input: {
+                    placeholder: props.input.placeholder
+                },
+                textarea: {
+                    value: props.textarea.value
+                }
+            }
+        };
+
+         const renderedTemplate = _.template(Template)(data);
+
+        this.renderComponent(elementName, renderedTemplate, Styles);
+    }
+
     /** Custom annotation - This hooks into this.events (You have to support compiling annotations) **/
-    @on("click")
-    onUserClick (event) {
-        console.log("hello", event);
+    @on("change input")
+    onInputValueChange (event) {
+        // Log out the new value
+        console.log(event.path[0].value);
     }
 }
 
@@ -42,4 +66,3 @@ class DemoComponent extends Component {
  */
 export default DemoComponent;
 ```
-

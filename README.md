@@ -2,7 +2,8 @@
 
 Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.1 recommended.`
 
-# Usage <small><small>**This is subject to change**</small></small>
+# Usage
+<small><small>**This is subject to change**</small></small>
 ```Javascript
 import { Component, on } from "marionette.component";
 import Template from "./index.html";

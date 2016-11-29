@@ -118,11 +118,13 @@
          * Constructor
          *
          * @param elementName {String} The name of the element (We register the radio channel with it here)
+         * @param localRegistrationName {String} The unique identifier for this component
          */
-        function Component(elementName) {
+        function Component(elementName, localRegistrationName) {
             _classCallCheck(this, Component);
 
-            this.radioChannel = _backbone2.default.channel("components:" + elementName);
+            this.radioChannel = _backbone2.default.channel("components:" + localRegistrationName);
+            this.elementChannel = _backbone2.default.channel("elements:" + elementName);
             this.initialize();
         }
 

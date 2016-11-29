@@ -52,9 +52,11 @@ export class Component {
      * Constructor
      *
      * @param elementName {String} The name of the element (We register the radio channel with it here)
+     * @param localRegistrationName {String} The unique identifier for this component
      */
-    constructor(elementName: string) {
-        this.radioChannel = Radio.channel(`components:${elementName}`);
+    constructor(elementName: string, localRegistrationName: string) {
+        this.radioChannel = Radio.channel(`components:${localRegistrationName}`);
+        this.elementChannel = Radio.channel(`elements:${elementName}`);
         this.initialize();
     }
 

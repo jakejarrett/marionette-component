@@ -1,9 +1,11 @@
 # Marionette.Component
 
-Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.1 recommended.`
+Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.x & Backbone.Radio 2.x required.`
+
+# Installation
+
 
 # Usage
-<small><small>**This is subject to change**</small></small>
 ```Javascript
 import { Component, on } from "marionette.component";
 import Template from "./index.html";

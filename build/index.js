@@ -1,25 +1,27 @@
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["exports", "backbone.radio"], factory);
+        define(["exports", "backbone.radio", "marionette"], factory);
     } else if (typeof exports !== "undefined") {
-        factory(exports, require("backbone.radio"));
+        factory(exports, require("backbone.radio"), require("marionette"));
     } else {
         var mod = {
             exports: {}
         };
-        factory(mod.exports, global.backbone);
+        factory(mod.exports, global.backbone, global.marionette);
         global.index = mod.exports;
     }
-})(this, function (exports, _backbone) {
+})(this, function (exports, _backbone, _marionette) {
     "use strict";
 
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.Component = undefined;
+    exports.View = exports.Component = undefined;
     exports.on = on;
 
     var _backbone2 = _interopRequireDefault(_backbone);
+
+    var _marionette2 = _interopRequireDefault(_marionette);
 
     function _interopRequireDefault(obj) {
         return obj && obj.__esModule ? obj : {
@@ -368,4 +370,127 @@
 
         return Element;
     }(HTMLElement);
+
+    var View = exports.View = function (_Marionette$View) {
+        _inherits(View, _Marionette$View);
+
+        function View() {
+            var _ref;
+
+            var _temp, _this2, _ret2;
+
+            _classCallCheck(this, View);
+
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+            }
+
+            return _ret2 = (_temp = (_this2 = _possibleConstructorReturn(this, (_ref = View.__proto__ || Object.getPrototypeOf(View)).call.apply(_ref, [this].concat(args))), _this2), _this2._components = {}, _this2._componentChannels = {}, _this2._count = {}, _temp), _possibleConstructorReturn(_this2, _ret2);
+        }
+
+        _createClass(View, [{
+            key: "getComponent",
+
+
+            /**
+             * Lookup a component by its name & get an object containing its radioChannel & the component.
+             *
+             * @param componentName {String} The name of the component you registered
+             * @returns {Object} References to the radio channel & itself.
+             */
+            value: function getComponent(componentName) {
+                return {
+                    component: this._components[componentName],
+                    radioChannel: this._componentChannels[componentName]
+                };
+            }
+
+            /**
+             * Register the component.
+             *
+             * @param componentRegistrar {Object} The singleton component registrar that holds components (outside of the view preferably)
+             * @param componentName {String} Name the component will be registered under.
+             * @param component {HTMLElement} The component you're registering.
+             * @param el {HTMLElement|jQuery} Container/Element you're putting the component into.
+             * @param properties {Object} Properties you wish to apply to the component.
+             */
+
+        }, {
+            key: "registerComponent",
+            value: function registerComponent(componentRegistrar, componentName, component, el, properties) {
+                var localCompName = void 0;
+
+                /** Conflict detection **/
+                if (undefined !== this._components[componentName]) {
+
+                    if (undefined === this._count[componentName]) {
+                        this._count[componentName] = 0;
+                    }
+
+                    localCompName = componentName + "-" + this._count[componentName];
+                    this._count[componentName]++;
+                } else {
+                    localCompName = componentName;
+                }
+
+                /** Store a reference to the returned element **/
+                var local = componentRegistrar.register(componentName, component, properties, localCompName);
+                var componentObject = componentRegistrar.getComponent(localCompName);
+
+                /** Store references to the component & radio channels **/
+                this._components[localCompName] = {
+                    element: componentObject.component,
+                    module: componentObject.componentModule
+                };
+
+                this._componentChannels[localCompName] = componentObject.radioChannel || {};
+
+                /** Append the returned element to the DOM **/
+                if (undefined !== el.jquery) {
+                    el.append(local);
+                } else {
+                    el.appendChild(local);
+                }
+
+                return localCompName;
+            }
+
+            /**
+             * Delete a component
+             *
+             * @param componentName {String} Name of the component
+             */
+
+        }, {
+            key: "deleteComponent",
+            value: function deleteComponent(componentName) {
+                delete this._components[componentName];
+                delete this._componentChannels[componentName];
+            }
+
+            /**
+             * Clear all the components out of memory.
+             */
+
+        }, {
+            key: "clearComponents",
+            value: function clearComponents() {
+                for (var key in this._components) {
+                    /** Loop through and delete all props **/
+                    if (this._components.hasOwnProperty(key)) {
+                        delete this._components[key];
+                        delete this._componentChannels[key];
+                    }
+                }
+
+                for (var _key2 in this._count) {
+                    if (this._count.hasOwnProperty(_key2)) {
+                        delete this._count[_key2];
+                    }
+                }
+            }
+        }]);
+
+        return View;
+    }(_marionette2.default.View);
 });

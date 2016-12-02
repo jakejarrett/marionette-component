@@ -2,6 +2,7 @@
 
 /** Only real dependency atm is backbone radio. **/
 import Radio from "backbone.radio";
+import Marionette from "marionette";
 
 /**
  * Event decorator
@@ -332,6 +333,107 @@ class Element extends HTMLElement {
         // $FlowIgnore: Not part of Flow type yet
         if (this.hasUpdated) this.shadowRoot.innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
 
+    }
+
+}
+
+/**
+ * Export an abstracted Marionette View to provide helpers for registering & maintaining components.
+ */
+export class View extends Marionette.View {
+
+    _components: Object = {};
+    _componentChannels: Object = {};
+    _count: Object = {};
+
+    /**
+     * Lookup a component by its name & get an object containing its radioChannel & the component.
+     *
+     * @param componentName {String} The name of the component you registered
+     * @returns {Object} References to the radio channel & itself.
+     */
+    getComponent (componentName: String) {
+        return {
+            component: this._components[componentName],
+            radioChannel: this._componentChannels[componentName]
+        };
+    }
+
+    /**
+     * Register the component.
+     *
+     * @param componentRegistrar {Object} The singleton component registrar that holds components (outside of the view preferably)
+     * @param componentName {String} Name the component will be registered under.
+     * @param component {HTMLElement} The component you're registering.
+     * @param el {HTMLElement|jQuery} Container/Element you're putting the component into.
+     * @param properties {Object} Properties you wish to apply to the component.
+     */
+    registerComponent (componentRegistrar, componentName, component, el, properties) {
+        let localCompName;
+
+        /** Conflict detection **/
+        if(undefined !== this._components[componentName]) {
+
+            if(undefined === this._count[componentName]) {
+                this._count[componentName] = 0;
+            }
+
+            localCompName = `${componentName}-${this._count[componentName]}`;
+            this._count[componentName]++;
+
+        } else {
+            localCompName = componentName;
+        }
+
+        /** Store a reference to the returned element **/
+        const local = componentRegistrar.register(componentName, component, properties, localCompName);
+        const componentObject = componentRegistrar.getComponent(localCompName);
+
+        /** Store references to the component & radio channels **/
+        this._components[localCompName] = {
+            element: componentObject.component,
+            module: componentObject.componentModule
+        };
+
+        this._componentChannels[localCompName] = componentObject.radioChannel || {};
+
+        /** Append the returned element to the DOM **/
+        if(undefined !== el.jquery) {
+            el.append(local);
+        } else {
+            el.appendChild(local);
+        }
+
+        return localCompName;
+    }
+
+    /**
+     * Delete a component
+     *
+     * @param componentName {String} Name of the component
+     */
+    deleteComponent (componentName: String) {
+        delete this._components[componentName];
+        delete this._componentChannels[componentName];
+    }
+
+    /**
+     * Clear all the components out of memory.
+     */
+    clearComponents () {
+        for(let key in this._components) {
+            /** Loop through and delete all props **/
+            if(this._components.hasOwnProperty(key)) {
+                delete this._components[key];
+                delete this._componentChannels[key];
+            }
+        }
+
+        for (let key in this._count) {
+            if(this._count.hasOwnProperty(key)) {
+                delete this._count[key];
+            }
+        }
     }
 
 }

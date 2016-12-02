@@ -1,7 +1,7 @@
 {
-  "name": "marionette.component",
-  "version": "0.2.3",
-  "description": "Reusable components for your marionette application",
+  "name": "marionette-component",
+  "version": "0.2.4",
+  "description": "Create reusable components for your marionette application",
   "main": "build/index.min.js",
   "scripts": {
     "build": "cp src/index.js build/index.js.flow && babel src/index.js -o build/index.js && uglifyjs build/index.js --output build/index.min.js --compress --mangle",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jakejarrett/Marionette.Component.git"
+    "url": "git+https://github.com/jakejarrett/marionette-component.git"
   },
   "keywords": [
     "Marionette",
@@ -22,11 +22,12 @@
   "author": "Jake Jarrett",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jakejarrett/Marionette.Component/issues"
+    "url": "https://github.com/jakejarrett/marionette-component/issues"
   },
-  "homepage": "https://github.com/jakejarrett/Marionette.Component#readme",
-  "peerDependencies": {
-    "backbone.radio": "^2.0.0"
+  "homepage": "https://github.com/jakejarrett/marionette-component#readme",
+  "dependencies": {
+    "backbone.radio": "^2.0.0",
+    "marionette": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
@@ -34,6 +35,7 @@
     "babel-loader": "^6.0.0",
     "babel-plugin-syntax-decorators": "^6.13.0",
     "babel-plugin-syntax-flow": "^6.13.0",
+    "babel-plugin-transform-class-properties": "^6.19.0",
     "babel-plugin-transform-decorators": "^6.13.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-es2015-classes": "^6.14.0",

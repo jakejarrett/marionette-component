@@ -7,6 +7,7 @@
     "syntax-decorators",
     "transform-decorators",
     "transform-function-bind",
+    "transform-class-properties",
     "babel-plugin-transform-es2015-classes",
     "babel-plugin-transform-es2015-modules-umd"
   ]

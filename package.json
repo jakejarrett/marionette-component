@@ -1,6 +1,6 @@
 {
-  "name": "marionette-component",
-  "version": "0.2.4",
+  "name": "@jakejarrett/marionette-component",
+  "version": "0.2.5",
   "description": "Create reusable components for your marionette application",
   "main": "build/index.min.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "Custom",
     "Elements"
   ],
-  "author": "Jake Jarrett",
+  "author": "Jake Jarrett <jakeryanjarrett@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jakejarrett/marionette-component/issues"

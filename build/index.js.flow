@@ -3,6 +3,7 @@
 /** Only real dependency atm is backbone radio. **/
 import Radio from "backbone.radio";
 import Marionette from "marionette";
+import * as WebComponents from "webcomponents.js";
 
 /**
  * Event decorator

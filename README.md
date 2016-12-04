@@ -6,7 +6,7 @@ Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.x &
 
 
 # Usage
-```Javascript
+```javascript
 import { Component, on } from "marionette.component";
 import Template from "./index.html";
 // This transforms into <style>:host{/* styling */}</style>

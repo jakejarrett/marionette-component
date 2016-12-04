@@ -1,16 +1,16 @@
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["exports", "backbone.radio", "marionette"], factory);
+        define(["exports", "backbone.radio", "marionette", "webcomponents.js"], factory);
     } else if (typeof exports !== "undefined") {
-        factory(exports, require("backbone.radio"), require("marionette"));
+        factory(exports, require("backbone.radio"), require("marionette"), require("webcomponents.js"));
     } else {
         var mod = {
             exports: {}
         };
-        factory(mod.exports, global.backbone, global.marionette);
+        factory(mod.exports, global.backbone, global.marionette, global.webcomponents);
         global.index = mod.exports;
     }
-})(this, function (exports, _backbone, _marionette) {
+})(this, function (exports, _backbone, _marionette, _webcomponents) {
     "use strict";
 
     Object.defineProperty(exports, "__esModule", {
@@ -22,6 +22,25 @@
     var _backbone2 = _interopRequireDefault(_backbone);
 
     var _marionette2 = _interopRequireDefault(_marionette);
+
+    var WebComponents = _interopRequireWildcard(_webcomponents);
+
+    function _interopRequireWildcard(obj) {
+        if (obj && obj.__esModule) {
+            return obj;
+        } else {
+            var newObj = {};
+
+            if (obj != null) {
+                for (var key in obj) {
+                    if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+                }
+            }
+
+            newObj.default = obj;
+            return newObj;
+        }
+    }
 
     function _interopRequireDefault(obj) {
         return obj && obj.__esModule ? obj : {

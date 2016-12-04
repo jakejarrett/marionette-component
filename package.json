@@ -1,6 +1,6 @@
 {
   "name": "@jakejarrett/marionette-component",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Create reusable components for your marionette application",
   "main": "build/index.min.js",
   "scripts": {
@@ -26,8 +26,9 @@
   },
   "homepage": "https://github.com/jakejarrett/marionette-component#readme",
   "dependencies": {
+    "backbone.marionette": "3.1.x",
     "backbone.radio": "2.0.x",
-    "backbone.marionette": "3.1.x"
+    "webcomponents.js": "^0.7.23"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",

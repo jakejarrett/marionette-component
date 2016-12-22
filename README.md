@@ -3,7 +3,12 @@
 Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.x & Backbone.Radio 2.x required.`
 
 # Installation
+`npm i @jakejarrett/marionette-component`
 
+# Dependencies
+* [Backbone](http://backbonejs.org) v1.3.3
+* [Backbone.Radio](https://github.com/marionettejs/backbone.radio) v2.0.0+
+* [Backbone.Marionette](https://github.com/marionettejs/backbone.marionette) v3.0.0+
 
 # Usage
 ```javascript

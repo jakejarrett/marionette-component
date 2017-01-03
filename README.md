@@ -1,4 +1,4 @@
-# Marionette.Component
+# Marionette Component
 
 Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.x & Backbone.Radio 2.x required.`
 
@@ -11,11 +11,12 @@ Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.x &
 * [Backbone.Marionette](https://github.com/marionettejs/backbone.marionette) v3.0.0+
 
 # Usage
+**Using Webpack 2 with html-loader, sass-loader & css-loader**
 ```javascript
-import { Component, on } from "marionette.component";
+import { Component, on } from "@jakejarrett/marionette-component";
 import Template from "./index.html";
 // This transforms into <style>:host{/* styling */}</style>
-import Styles from "!css?modules!sass!./style.scss";
+import Styles from "!css-loader?modules!sass-loader!./style.scss";
 
 /**
  * Entry point for demo-component

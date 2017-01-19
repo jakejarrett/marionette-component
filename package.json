@@ -4,8 +4,13 @@
   "description": "Create reusable components for your marionette application",
   "main": "build/index.min.js",
   "scripts": {
-    "build": "cp src/index.js build/index.js.flow && babel src/index.js -o build/index.js && uglifyjs build/index.js --output build/index.min.js --compress --mangle",
-    "test": "eslint src/* && flow check src/*"
+    "build": "npm run copy:flow && npm run build:babel && npm run build:minify && npm run build:stripFlow && npm run docs",
+    "copy:flow": "cp src/index.js build/index.js.flow",
+    "build:babel": "babel src/index.js -o build/index.js",
+    "build:stripFlow": "babel --no-babelrc src/index.js -o build/index.es6 --plugins=syntax-flow,transform-flow-strip-types,transform-class-properties",
+    "build:minify": "uglifyjs build/index.js --output build/index.min.js --compress --mangle",
+    "test": "eslint src/* && flow check src/*",
+    "docs": "node_modules/.bin/jsdoc -c jsdoc.json"
   },
   "repository": {
     "type": "git",
@@ -44,9 +49,11 @@
     "babel-plugin-transform-flow-strip-types": "^6.14.0",
     "babel-plugin-transform-function-bind": "^6.8.0",
     "babel-preset-es2015": "^6.16.0",
+    "docdash": "^0.4.0",
     "eslint": "^3.8.1",
     "eslint-plugin-flowtype": "^2.21.0",
     "flow-bin": "^0.33.0",
+    "jsdoc": "^3.4.3",
     "uglify-js": "^2.7.3"
   }
 }

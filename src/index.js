@@ -185,6 +185,8 @@ export class Component {
 
 /**
  * Create the custom element with shadow dom support for true encapsulation!
+ *
+ * @extends HTMLElement
  */
 class Element extends HTMLElement {
 

@@ -1,4 +1,4 @@
-/* @flow */
+
 
 /** Only real dependency atm is backbone radio. **/
 import Radio from "backbone.radio";
@@ -12,16 +12,16 @@ import Marionette from "backbone.marionette";
  * @param eventName {String} The event you want to bind (EG/ "click div")
  * @returns {Function} The "on" decorator (@on)
  */
-export function on(eventName: string) {
+export function on(eventName) {
     /**
      * Return a decorator function
      */
-    return function(target: Object, name: string, descriptor: Object){
+    return function (target, name, descriptor) {
 
         /** Guard conditions **/
-        if(!target.events) target.events = {};
-        if(typeof target.events === "function") throw new Error("The on decorator is only compatible with an events object");
-        if(!eventName) throw new Error("The on decorator requires an eventName argument");
+        if (!target.events) target.events = {};
+        if (typeof target.events === "function") throw new Error("The on decorator is only compatible with an events object");
+        if (!eventName) throw new Error("The on decorator requires an eventName argument");
 
         target.addEvent(eventName, name, target);
 
@@ -30,7 +30,7 @@ export function on(eventName: string) {
 }
 
 // Provide context from one class to another
-var GlobalElement: Object;
+var GlobalElement;
 
 /**
  * Marionette Components.
@@ -43,27 +43,20 @@ var GlobalElement: Object;
 export class Component {
 
     /**
-     * Setup types for variables.
-     */
-    radioChannel: Object;
-    elementChannel: Object;
-    state: Object;
-    events: Object;
-    __disableShadowDOM: boolean = false;
-
-    /**
      * Constructor
      *
      * @param elementName {String} The name of the element (We register the radio channel with it here)
      * @param localRegistrationName {String} The unique identifier for this component
      * @param options {Object} Optional settings
      */
-    constructor(elementName: string, localRegistrationName: string, options: Object) {
-        this.radioChannel = Radio.channel(`components:${localRegistrationName}`);
-        this.elementChannel = Radio.channel(`elements:${elementName}`);
+    constructor(elementName, localRegistrationName, options) {
+        this.__disableShadowDOM = false;
+
+        this.radioChannel = Radio.channel(`components:${ localRegistrationName }`);
+        this.elementChannel = Radio.channel(`elements:${ elementName }`);
         const optionsPresent = undefined !== options;
 
-        if(optionsPresent && options.disableShadowDOM) {
+        if (optionsPresent && options.disableShadowDOM) {
             this.__disableShadowDOM = true;
         }
 
@@ -78,9 +71,14 @@ export class Component {
      * @param stylesheet {Object} The stylesheet for your encapsulated component.
      * @param state {Object} The state object
      */
-    renderComponent (elementName: string, element: Object, stylesheet: Object, state: Object) {
+
+
+    /**
+     * Setup types for variables.
+     */
+    renderComponent(elementName, element, stylesheet, state) {
         /** Setup Component **/
-        let that: Object = this;
+        let that = this;
 
         if (undefined !== state) this.state = state;
         if (undefined === this.events) this.events = {};
@@ -94,7 +92,7 @@ export class Component {
 
         this.radioChannel.on("attached", element => {
             /** If events object isn't empty **/
-            if(Object.keys(that.events).length !== 0 && that.events.constructor === Object) {
+            if (Object.keys(that.events).length !== 0 && that.events.constructor === Object) {
 
                 for (let event in that.events) {
                     const eventArray = event.split(" ");
@@ -104,20 +102,20 @@ export class Component {
                         if (eventArray.length <= 2 && eventArray[1] !== undefined) {
                             let elem = element;
 
-                            if(!that.__disableShadowDOM) {
+                            if (!that.__disableShadowDOM) {
                                 elem = element.shadowRoot;
                             }
 
-                            if(elem.querySelector(eventArray[1]).length <= 1) {
+                            if (elem.querySelector(eventArray[1]).length <= 1) {
 
                                 // Only run if we've matched the same element.
-                                if(e.path && e.path[0] === elem.querySelector(eventArray[1])) {
+                                if (e.path && e.path[0] === elem.querySelector(eventArray[1])) {
                                     that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                                 }
                             } else {
                                 elem.querySelectorAll(eventArray[1]).forEach(element => {
                                     // Only run if we've matched the same element.
-                                    if(e.path && e.path[0] === element) {
+                                    if (e.path && e.path[0] === element) {
                                         that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                                     }
                                 });
@@ -127,7 +125,6 @@ export class Component {
                         }
                     });
                 }
-
             }
         });
     }
@@ -135,7 +132,7 @@ export class Component {
     /**
      * Initialize the events
      */
-    initialize () {
+    initialize() {
         let that = this;
         // $FlowIgnore: This is registered dynamically, so static typing can't detect this.
         this.radioChannel.on("eventListenerTriggered", (event, passthroughEvent) => that[event](passthroughEvent));
@@ -147,7 +144,7 @@ export class Component {
      * @param event {String} The event you're listening to
      * @param method {String} The method that will be called
      */
-    addEvent(event: String, method: string) {
+    addEvent(event, method) {
         this.events[event] = method;
     }
 
@@ -157,8 +154,8 @@ export class Component {
      * @param event {String} The event that the method is listening to (EG/ click)
      * @param method {String} The method you want to remove
      */
-    removeEvent (event: string, method: string) {
-        if(undefined !== event && typeof method === "function") {
+    removeEvent(event, method) {
+        if (undefined !== event && typeof method === "function") {
             this.element.removeEventListener(event, method);
             delete this.events[event];
         }
@@ -170,7 +167,7 @@ export class Component {
      * @returns {Element}
      */
     // $FlowIgnore: We don't want to pre-initialize the element!
-    get element () : Element {
+    get element() {
         return Element;
     }
 
@@ -178,7 +175,7 @@ export class Component {
      * Return the Element class.
      */
     // $FlowIgnore: We don't want to pre-initialize the element!
-    set element (elem: HTMLElement) {
+    set element(elem) {
         Element = elem;
     }
 }
@@ -191,23 +188,16 @@ export class Component {
 class Element extends HTMLElement {
 
     /**
-     * Setup types for variables.
-     */
-    _previousElement: HTMLElement;
-    _element: HTMLElement;
-    _elementName: string;
-    _previousStylesheet: Object;
-    _stylesheet: Object;
-    _updated: boolean;
-    _hasShadowRoot: boolean;
-    createShadowRoot: Function;
-
-    /**
      * Set the element
      *
      * @param updatedElement {HTMLElement} The new element you're setting
      */
-    set element (updatedElement: HTMLElement) {
+
+
+    /**
+     * Setup types for variables.
+     */
+    set element(updatedElement) {
         this.hasUpdated = true;
         this._previousElement = this._element;
 
@@ -219,7 +209,7 @@ class Element extends HTMLElement {
      *
      * @returns {HTMLElement}
      */
-    get element () {
+    get element() {
         return this._element;
     }
 
@@ -228,7 +218,7 @@ class Element extends HTMLElement {
      *
      * @returns {String}
      */
-    get elementName () {
+    get elementName() {
         return this._elementName;
     }
 
@@ -237,7 +227,7 @@ class Element extends HTMLElement {
      *
      * @returns {HTMLElement}
      */
-    get previousElement () {
+    get previousElement() {
         return this._previousElement;
     }
 
@@ -246,7 +236,7 @@ class Element extends HTMLElement {
      *
      * @param stylesheet {Object}
      */
-    set stylesheet (stylesheet: Object) {
+    set stylesheet(stylesheet) {
         this.hasUpdated = true;
         this._previousStylesheet = this._stylesheet;
 
@@ -258,7 +248,7 @@ class Element extends HTMLElement {
      *
      * @returns {Object}
      */
-    get stylesheet () {
+    get stylesheet() {
         return this._stylesheet;
     }
 
@@ -267,12 +257,12 @@ class Element extends HTMLElement {
      *
      * @param updated {boolean}
      */
-    set hasUpdated (updated: boolean) {
-        if(typeof updated  !== "boolean") throw new TypeError("Updated can only be a boolean type");
+    set hasUpdated(updated) {
+        if (typeof updated !== "boolean") throw new TypeError("Updated can only be a boolean type");
 
         this._updated = updated;
 
-        if (updated) Radio.channel(`components:${this._elementName}`).trigger("updated");
+        if (updated) Radio.channel(`components:${ this._elementName }`).trigger("updated");
     }
 
     /**
@@ -280,7 +270,7 @@ class Element extends HTMLElement {
      *
      * @returns {boolean} True if it has updated
      */
-    get hasUpdated () {
+    get hasUpdated() {
         return this._updated;
     }
 
@@ -289,14 +279,14 @@ class Element extends HTMLElement {
      *
      * @returns {Backbone.Radio} An instance of Backbone radio.
      */
-    get radio () {
-        return Radio.channel(`components:${this._elementName}`);
+    get radio() {
+        return Radio.channel(`components:${ this._elementName }`);
     }
 
     /**
      * When the element is initialized, we'll create the element
      */
-    createdCallback () {
+    createdCallback() {
         /** Initial time running, so its not technically updating **/
         this._element = GlobalElement.element;
         this._stylesheet = GlobalElement.stylesheet;
@@ -306,18 +296,18 @@ class Element extends HTMLElement {
         let element = this;
 
         /** Add the styles directly into the shadow root & then append the rendered template **/
-        if(this._hasShadowRoot) {
+        if (this._hasShadowRoot) {
             element = this.createShadowRoot();
         }
 
-        element.innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element.toString()}`;
+        element.innerHTML = `<style>${ this.stylesheet.toString() }</style>${ this.element.toString() }`;
     }
 
     /**
      * When the component has been painted to the DOM
      */
-    attachedCallback () {
-        Radio.channel(`components:${this._elementName}`).trigger("attached", this);
+    attachedCallback() {
+        Radio.channel(`components:${ this._elementName }`).trigger("attached", this);
     }
 
     /**
@@ -327,8 +317,8 @@ class Element extends HTMLElement {
      * @param oldValue {String} Old value of the attribute
      * @param newValue {String} New value of the attribute
      */
-    attributeChangedCallback (attrName: string, oldValue: string, newValue: string) {
-        Radio.channel(`components:${this._elementName}`).trigger("attributeChanged", {
+    attributeChangedCallback(attrName, oldValue, newValue) {
+        Radio.channel(`components:${ this._elementName }`).trigger("attributeChanged", {
             attributeName: attrName,
             previousAttribute: oldValue,
             newAttribute: newValue
@@ -338,8 +328,8 @@ class Element extends HTMLElement {
     /**
      * When the component has been removed from the DOM
      */
-    detachedCallback () {
-        Radio.channel(`components:${this._elementName}`).trigger("detached");
+    detachedCallback() {
+        Radio.channel(`components:${ this._elementName }`).trigger("detached");
     }
 
     /**
@@ -349,23 +339,22 @@ class Element extends HTMLElement {
      * @param updatedStylesheet {Object} The new stylesheet
      * @public
      */
-    updateElement (updatedElement: HTMLElement, updatedStylesheet: Object) {
+    updateElement(updatedElement, updatedStylesheet) {
         let hasShadowDom = this._hasShadowRoot;
         let element = this;
 
-        if(hasShadowDom) {
+        if (hasShadowDom) {
             /* $FlowIgnore: shadowRoot is spec compliant */
             element = this.shadowRoot;
         }
 
         /** Only update if we were passed data **/
-        if(undefined !== updatedElement) this.element = updatedElement;
-        if(undefined !== updatedElement) this.stylesheet = updatedStylesheet;
+        if (undefined !== updatedElement) this.element = updatedElement;
+        if (undefined !== updatedElement) this.stylesheet = updatedStylesheet;
 
         /** If we've triggered a hasUpdated method **/
         // $FlowIgnore: Not part of Flow type yet
-        if (this.hasUpdated) element.innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
-
+        if (this.hasUpdated) element.innerHTML = `<style>${ this.stylesheet.toString() }</style>${ this.element }`;
     }
 
 }
@@ -374,10 +363,11 @@ class Element extends HTMLElement {
  * Export an abstracted Marionette View to provide helpers for registering & maintaining components.
  */
 export class View extends Marionette.View {
+    constructor(...args) {
+        var _temp;
 
-    _components: Object = {};
-    _componentChannels: Object = {};
-    _count: Object = {};
+        return _temp = super(...args), this._components = {}, this._componentChannels = {}, this._count = {}, _temp;
+    }
 
     /**
      * Lookup a component by its name & get an object containing its radioChannel & the component.
@@ -385,7 +375,7 @@ export class View extends Marionette.View {
      * @param componentName {String} The name of the component you registered
      * @returns {Object} References to the radio channel & itself.
      */
-    getComponent (componentName: String) {
+    getComponent(componentName) {
         return {
             component: this._components[componentName],
             radioChannel: this._componentChannels[componentName]
@@ -401,19 +391,18 @@ export class View extends Marionette.View {
      * @param el {HTMLElement|jQuery} Container/Element you're putting the component into.
      * @param properties {Object} Properties you wish to apply to the component.
      */
-    registerComponent (componentRegistrar: Object, componentName: string, component: HTMLElement, el: HTMLElement, properties: Object) {
+    registerComponent(componentRegistrar, componentName, component, el, properties) {
         let localCompName;
 
         /** Conflict detection **/
-        if(undefined !== this._components[componentName]) {
+        if (undefined !== this._components[componentName]) {
 
-            if(undefined === this._count[componentName]) {
+            if (undefined === this._count[componentName]) {
                 this._count[componentName] = 0;
             }
 
-            localCompName = `${componentName}-${this._count[componentName]}`;
+            localCompName = `${ componentName }-${ this._count[componentName] }`;
             this._count[componentName]++;
-
         } else {
             localCompName = componentName;
         }
@@ -433,7 +422,7 @@ export class View extends Marionette.View {
         let elAppend = el.appendChild;
 
         /** Append the returned element to the DOM **/
-        if(undefined !== el.jquery) {
+        if (undefined !== el.jquery) {
             /* $FlowIgnore: Support jQuery */
             elAppend = el.append;
         }
@@ -448,7 +437,7 @@ export class View extends Marionette.View {
      *
      * @param componentName {String} Name of the component
      */
-    deleteComponent (componentName: String) {
+    deleteComponent(componentName) {
         delete this._components[componentName];
         delete this._componentChannels[componentName];
     }
@@ -456,17 +445,17 @@ export class View extends Marionette.View {
     /**
      * Clear all the components out of memory.
      */
-    clearComponents () {
-        for(let key in this._components) {
+    clearComponents() {
+        for (let key in this._components) {
             /** Loop through and delete all props **/
-            if(this._components.hasOwnProperty(key)) {
+            if (this._components.hasOwnProperty(key)) {
                 delete this._components[key];
                 delete this._componentChannels[key];
             }
         }
 
         for (let key in this._count) {
-            if(this._count.hasOwnProperty(key)) {
+            if (this._count.hasOwnProperty(key)) {
                 delete this._count[key];
             }
         }

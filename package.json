@@ -1,6 +1,6 @@
 {
   "name": "@jakejarrett/marionette-component",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Create reusable components for your marionette application",
   "main": "build/index.min.js",
   "scripts": {

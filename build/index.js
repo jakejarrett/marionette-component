@@ -108,16 +108,17 @@
     /**
      * Marionette Components.
      *
-     * Re-usable encapsulated views for use in your framework of choice.
+     * Re-usable components for Marionette JS.
      *
-     * Based on marionette.component by jfairbank.
-     * @see https://github.com/jfairbank/marionette.component
+     * @param elementName {String} The name of the element (We register the radio channel with it here)
+     * @param localRegistrationName {String} The unique identifier for this component
+     * @param options {Object} Optional settings
      */
 
     var Component = exports.Component = function () {
 
         /**
-         * Constructor
+         * Construct your component, Only requires elementName & localRegistration name (Which is usually handled by your component registrar)
          *
          * @param elementName {String} The name of the element (We register the radio channel with it here)
          * @param localRegistrationName {String} The unique identifier for this component
@@ -256,7 +257,7 @@
             }
 
             /**
-             * Return the Element class.
+             * Returns the element that is registered to the component
              *
              * @returns {Element}
              */
@@ -269,7 +270,9 @@
             }
 
             /**
-             * Return the Element class.
+             * Change the component at run time.
+             *
+             * @param elem {Element|HTMLElement} The element you're setting it to.
              */
             // $FlowIgnore: We don't want to pre-initialize the element!
             ,
@@ -293,7 +296,6 @@
         _createClass(Element, [{
             key: "createdCallback",
             value: function createdCallback() {
-                /** Initial time running, so its not technically updating **/
                 this._element = GlobalElement.element;
                 this._stylesheet = GlobalElement.stylesheet;
                 this._elementName = GlobalElement.elementName;
@@ -435,6 +437,29 @@
             }
 
             /**
+             * Conflict detection
+             *
+             * @param componentName {string} The component name
+             * @returns {string} Conflict free name, (EG/ property-01)
+             */
+
+        }, {
+            key: "noConflict",
+            value: function noConflict(componentName) {
+                var localCompName = componentName;
+                var isPredefined = undefined !== this._components[componentName];
+
+                if (isPredefined) {
+                    this._count[componentName] = this._count[componentName] || 0;
+
+                    localCompName = componentName + "-" + this._count[componentName];
+                    this._count[componentName]++;
+                }
+
+                return localCompName;
+            }
+
+            /**
              * Register the component.
              *
              * @param componentRegistrar {Object} The singleton component registrar that holds components (outside of the view preferably)
@@ -447,20 +472,8 @@
         }, {
             key: "registerComponent",
             value: function registerComponent(componentRegistrar, componentName, component, el, properties) {
-                var localCompName = void 0;
 
-                /** Conflict detection **/
-                if (undefined !== this._components[componentName]) {
-
-                    if (undefined === this._count[componentName]) {
-                        this._count[componentName] = 0;
-                    }
-
-                    localCompName = componentName + "-" + this._count[componentName];
-                    this._count[componentName]++;
-                } else {
-                    localCompName = componentName;
-                }
+                var localCompName = this.noConflict(componentName);
 
                 /** Store a reference to the returned element **/
                 var local = componentRegistrar.register(componentName, component, properties, localCompName);
@@ -501,7 +514,9 @@
             }
 
             /**
-             * Clear all the components out of memory.
+             * Remove all the components.
+             *
+             * Dangerous function!!
              */
 
         }, {

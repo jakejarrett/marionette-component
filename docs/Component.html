@@ -22,7 +22,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Component.html">Component</a><ul class='methods'><li data-type='method'><a href="Component.html#addEvent">addEvent</a></li><li data-type='method'><a href="Component.html#initialize">initialize</a></li><li data-type='method'><a href="Component.html#removeEvent">removeEvent</a></li><li data-type='method'><a href="Component.html#renderComponent">renderComponent</a></li></ul></li><li><a href="Element.html">Element</a><ul class='methods'><li data-type='method'><a href="Element.html#attachedCallback">attachedCallback</a></li><li data-type='method'><a href="Element.html#attributeChangedCallback">attributeChangedCallback</a></li><li data-type='method'><a href="Element.html#createdCallback">createdCallback</a></li><li data-type='method'><a href="Element.html#detachedCallback">detachedCallback</a></li><li data-type='method'><a href="Element.html#updateElement">updateElement</a></li></ul></li><li><a href="View.html">View</a><ul class='methods'><li data-type='method'><a href="View.html#clearComponents">clearComponents</a></li><li data-type='method'><a href="View.html#deleteComponent">deleteComponent</a></li><li data-type='method'><a href="View.html#getComponent">getComponent</a></li><li data-type='method'><a href="View.html#registerComponent">registerComponent</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#on">on</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Component.html">Component</a><ul class='methods'><li data-type='method'><a href="Component.html#addEvent">addEvent</a></li><li data-type='method'><a href="Component.html#initialize">initialize</a></li><li data-type='method'><a href="Component.html#removeEvent">removeEvent</a></li><li data-type='method'><a href="Component.html#renderComponent">renderComponent</a></li></ul></li><li><a href="Element.html">Element</a><ul class='methods'><li data-type='method'><a href="Element.html#attachedCallback">attachedCallback</a></li><li data-type='method'><a href="Element.html#attributeChangedCallback">attributeChangedCallback</a></li><li data-type='method'><a href="Element.html#createdCallback">createdCallback</a></li><li data-type='method'><a href="Element.html#detachedCallback">detachedCallback</a></li><li data-type='method'><a href="Element.html#updateElement">updateElement</a></li></ul></li><li><a href="View.html">View</a><ul class='methods'><li data-type='method'><a href="View.html#clearComponents">clearComponents</a></li><li data-type='method'><a href="View.html#deleteComponent">deleteComponent</a></li><li data-type='method'><a href="View.html#getComponent">getComponent</a></li><li data-type='method'><a href="View.html#noConflict">noConflict</a></li><li data-type='method'><a href="View.html#registerComponent">registerComponent</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#on">on</a></li></ul>
 </nav>
 
 <div id="main">
@@ -44,8 +44,7 @@
         </h2>
         
             <div class="class-description"><p>Marionette Components.</p>
-<p>Re-usable encapsulated views for use in your framework of choice.</p>
-<p>Based on marionette.component by jfairbank.</p></div>
+<p>Re-usable components for Marionette JS.</p></div>
         
     
 </header>
@@ -59,7 +58,7 @@
     <h2>Constructor</h2>
     
 
-    <h4 class="name" id="Component"><span class="type-signature"></span>new Component<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Component"><span class="type-signature"></span>new Component<span class="signature">(elementName, localRegistrationName, options)</span><span class="type-signature"></span></h4>
 
     
 
@@ -71,7 +70,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line43">line 43</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line44">line 44</a>
     </li></ul></dd>
     
 
@@ -102,13 +101,6 @@
     
 
     
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="https://github.com/jfairbank/marionette.component">https://github.com/jfairbank/marionette.component</a></li>
-        </ul>
-    </dd>
-    
 
     
 </dl>
@@ -125,6 +117,101 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>elementName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The name of the element (We register the radio channel with it here)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>localRegistrationName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The unique identifier for this component</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional settings</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -170,7 +257,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line170">line 170</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -210,7 +297,7 @@
 
 
 <div class="description">
-    <p>Return the Element class.</p>
+    <p>Returns the element that is registered to the component</p>
 </div>
 
 
@@ -233,7 +320,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line178">line 178</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line181">line 181</a>
     </li></ul></dd>
     
 
@@ -273,7 +360,7 @@
 
 
 <div class="description">
-    <p>Return the Element class.</p>
+    <p>Change the component at run time.</p>
 </div>
 
 
@@ -306,7 +393,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line147">line 147</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line148">line 148</a>
     </li></ul></dd>
     
 
@@ -462,7 +549,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line135">line 135</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line136">line 136</a>
     </li></ul></dd>
     
 
@@ -546,7 +633,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line157">line 157</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line158">line 158</a>
     </li></ul></dd>
     
 
@@ -702,7 +789,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line79">line 79</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -815,7 +902,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line52">line 52</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line53">line 53</a>
     </li></ul></dd>
     
 
@@ -855,7 +942,7 @@
 
 
 <div class="description">
-    <p>Constructor</p>
+    <p>Construct your component, Only requires elementName &amp; localRegistration name (Which is usually handled by your component registrar)</p>
 </div>
 
 
@@ -1006,7 +1093,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line170">line 170</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -1046,7 +1133,7 @@
 
 
 <div class="description">
-    <p>Return the Element class.</p>
+    <p>Returns the element that is registered to the component</p>
 </div>
 
 
@@ -1069,7 +1156,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line178">line 178</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line181">line 181</a>
     </li></ul></dd>
     
 
@@ -1109,7 +1196,7 @@
 
 
 <div class="description">
-    <p>Return the Element class.</p>
+    <p>Change the component at run time.</p>
 </div>
 
 
@@ -1142,7 +1229,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line147">line 147</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line148">line 148</a>
     </li></ul></dd>
     
 
@@ -1298,7 +1385,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line135">line 135</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line136">line 136</a>
     </li></ul></dd>
     
 
@@ -1382,7 +1469,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line157">line 157</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line158">line 158</a>
     </li></ul></dd>
     
 
@@ -1538,7 +1625,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line79">line 79</a>
+        <a href="index.es6.html">index.es6</a>, <a href="index.es6.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -1623,7 +1710,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jan 19 2017 19:12:23 GMT+1100 (AEDT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jan 19 2017 19:40:43 GMT+1100 (AEDT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

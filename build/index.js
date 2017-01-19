@@ -487,15 +487,13 @@
 
                 this._componentChannels[localCompName] = componentObject.radioChannel || {};
 
-                var elAppend = el.appendChild;
-
                 /** Append the returned element to the DOM **/
                 if (undefined !== el.jquery) {
                     /* $FlowIgnore: Support jQuery */
-                    elAppend = el.append;
+                    el.append(local);
+                } else {
+                    el.appendChild(local);
                 }
-
-                elAppend(local);
 
                 return localCompName;
             }

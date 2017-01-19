@@ -3,7 +3,6 @@
 /** Only real dependency atm is backbone radio. **/
 import Radio from "backbone.radio";
 import Marionette from "marionette";
-import * as WebComponents from "webcomponents.js";
 
 /**
  * Event decorator
@@ -61,8 +60,9 @@ export class Component {
     constructor(elementName: string, localRegistrationName: string, options: Object) {
         this.radioChannel = Radio.channel(`components:${localRegistrationName}`);
         this.elementChannel = Radio.channel(`elements:${elementName}`);
+        const optionsPresent = undefined !== options;
 
-        if(options.disableShadowDOM) {
+        if(optionsPresent && options.disableShadowDOM) {
             this.__disableShadowDOM = true;
         }
 

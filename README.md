@@ -1,9 +1,9 @@
-# Marionette Component
+# Marionette Component [![npm version](https://badge.fury.io/js/%40jakejarrett%2Fmarionette-component.svg)](https://badge.fury.io/js/%40jakejarrett%2Fmarionette-component)
 
 Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.x & Backbone.Radio 2.x required.`
 
 # Installation
-`npm i @jakejarrett/marionette-component`
+`npm i --save @jakejarrett/marionette-component`
 
 # Dependencies
 * [Backbone](http://backbonejs.org) v1.3.3
@@ -12,23 +12,28 @@ Re-usable encapsulated views for your MarionetteJS Application `Marionette 3.x &
 
 # Usage
 **Using Webpack 2 with html-loader, sass-loader & css-loader**
+
+### Importing
 ```javascript
 import { Component, on } from "@jakejarrett/marionette-component";
-import Template from "./index.html";
-// This transforms into <style>:host{/* styling */}</style>
-import Styles from "!css-loader?modules!sass-loader!./style.scss";
+import Template from "./index.html"; // Optional, You can inline the HTML too.
+import Styles from "!css-loader?modules!sass-loader!./style.scss"; // Optional, can also inline styles
+```
 
-/**
- * Entry point for demo-component
- */
+### Creating a component
+Currently only supports ES6 class syntax
+```javascript
+// Extend the Component object
 class DemoComponent extends Component {
 
     /**
      * Setup our component.
      */
-    constructor (elementName, props) {
+    constructor (elementName, props, /* Optional */ { disableShadowDOM: true }) {
         /** Initialize component **/
         super(elementName);
+
+        // you can setup state etc here.
 
         // Call render
         this.render(elementName, props);

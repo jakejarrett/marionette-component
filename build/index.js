@@ -140,12 +140,25 @@
          *
          * @param elementName {String} The name of the element (We register the radio channel with it here)
          * @param localRegistrationName {String} The unique identifier for this component
+         * @param options {Object} Optional settings
          */
-        function Component(elementName, localRegistrationName) {
+
+
+        /**
+         * Setup types for variables.
+         */
+        function Component(elementName, localRegistrationName, options) {
             _classCallCheck(this, Component);
+
+            this.__disableShadowDOM = false;
 
             this.radioChannel = _backbone2.default.channel("components:" + localRegistrationName);
             this.elementChannel = _backbone2.default.channel("elements:" + elementName);
+
+            if (options.disableShadowDOM) {
+                this.__disableShadowDOM = true;
+            }
+
             this.initialize();
         }
 
@@ -156,11 +169,6 @@
          * @param element {Object} The pass through object for constructing the Component View.
          * @param stylesheet {Object} The stylesheet for your encapsulated component.
          * @param state {Object} The state object
-         */
-
-
-        /**
-         * Setup types for variables.
          */
 
 
@@ -176,7 +184,8 @@
                 GlobalElement = {
                     elementName: elementName,
                     element: element,
-                    stylesheet: stylesheet
+                    stylesheet: stylesheet,
+                    disableShadowDOM: that.__disableShadowDOM
                 };
 
                 this.radioChannel.on("attached", function (element) {
@@ -188,16 +197,22 @@
                             /** Now that the element is attached to the dom, add in the event listeners **/
                             element.addEventListener(eventArray[0], function (e) {
                                 if (eventArray.length <= 2 && eventArray[1] !== undefined) {
-                                    if (element.shadowRoot.querySelector(eventArray[1]).length <= 1) {
+                                    var elem = element;
+
+                                    if (!that.__disableShadowDOM) {
+                                        elem = element.shadowRoot;
+                                    }
+
+                                    if (elem.querySelector(eventArray[1]).length <= 1) {
 
                                         // Only run if we've matched the same element.
-                                        if (e.path && e.path[0] === element.shadowRoot.querySelector(eventArray[1])) {
+                                        if (e.path && e.path[0] === elem.querySelector(eventArray[1])) {
                                             that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                                         }
                                     } else {
-                                        element.shadowRoot.querySelectorAll(eventArray[1]).forEach(function (elem) {
+                                        elem.querySelectorAll(eventArray[1]).forEach(function (element) {
                                             // Only run if we've matched the same element.
-                                            if (e.path && e.path[0] === elem) {
+                                            if (e.path && e.path[0] === element) {
                                                 that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                                             }
                                         });
@@ -300,10 +315,17 @@
                 this._element = GlobalElement.element;
                 this._stylesheet = GlobalElement.stylesheet;
                 this._elementName = GlobalElement.elementName;
+                this._hasShadowRoot = !GlobalElement.disableShadowDOM;
+
+                var element = this;
 
                 /** Add the styles directly into the shadow root & then append the rendered template **/
                 // $FlowIgnore: Not part of Flow type yet
-                this.createShadowRoot().innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element;
+                if (this._hasShadowRoot) {
+                    element = this.createShadowRoot();
+                }
+
+                element.innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element;
             }
         }, {
             key: "attachedCallback",
@@ -328,13 +350,20 @@
             key: "updateElement",
             value: function updateElement(updatedElement, updatedStylesheet) {
 
+                var hasShadowDom = this._hasShadowRoot;
+                var element = this;
+
+                if (hasShadowDom) {
+                    element = this.shadowRoot;
+                }
+
                 /** Only update if we were passed data **/
                 if (undefined !== updatedElement) this.element = updatedElement;
                 if (undefined !== updatedElement) this.stylesheet = updatedStylesheet;
 
                 /** If we've triggered a hasUpdated method **/
                 // $FlowIgnore: Not part of Flow type yet
-                if (this.hasUpdated) this.shadowRoot.innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element;
+                if (this.hasUpdated) element.innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element;
             }
         }, {
             key: "element",

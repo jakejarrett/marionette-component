@@ -49,16 +49,23 @@ export class Component {
     radioChannel: Object;
     state: Object;
     events: Object;
+    __disableShadowDOM: Boolean = false;
 
     /**
      * Constructor
      *
      * @param elementName {String} The name of the element (We register the radio channel with it here)
      * @param localRegistrationName {String} The unique identifier for this component
+     * @param options {Object} Optional settings
      */
-    constructor(elementName: string, localRegistrationName: string) {
+    constructor(elementName: string, localRegistrationName: string, options: Object) {
         this.radioChannel = Radio.channel(`components:${localRegistrationName}`);
         this.elementChannel = Radio.channel(`elements:${elementName}`);
+
+        if(options.disableShadowDOM) {
+            this.__disableShadowDOM = true;
+        }
+
         this.initialize();
     }
 
@@ -80,7 +87,8 @@ export class Component {
         GlobalElement = {
             elementName: elementName,
             element: element,
-            stylesheet: stylesheet
+            stylesheet: stylesheet,
+            disableShadowDOM: that.__disableShadowDOM
         };
 
         this.radioChannel.on("attached", element => {
@@ -93,16 +101,22 @@ export class Component {
                     /** Now that the element is attached to the dom, add in the event listeners **/
                     element.addEventListener(eventArray[0], function (e) {
                         if (eventArray.length <= 2 && eventArray[1] !== undefined) {
-                            if(element.shadowRoot.querySelector(eventArray[1]).length <= 1) {
+                            let elem = element;
+
+                            if(!that.__disableShadowDOM) {
+                                elem = element.shadowRoot;
+                            }
+
+                            if(elem.querySelector(eventArray[1]).length <= 1) {
 
                                 // Only run if we've matched the same element.
-                                if(e.path && e.path[0] === element.shadowRoot.querySelector(eventArray[1])) {
+                                if(e.path && e.path[0] === elem.querySelector(eventArray[1])) {
                                     that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                                 }
                             } else {
-                                element.shadowRoot.querySelectorAll(eventArray[1]).forEach(function(elem){
+                                elem.querySelectorAll(eventArray[1]).forEach(element => {
                                     // Only run if we've matched the same element.
-                                    if(e.path && e.path[0] === elem) {
+                                    if(e.path && e.path[0] === element) {
                                         that.radioChannel.trigger("eventListenerTriggered", that.events[event], e);
                                     }
                                 });
@@ -282,10 +296,17 @@ class Element extends HTMLElement {
         this._element = GlobalElement.element;
         this._stylesheet = GlobalElement.stylesheet;
         this._elementName = GlobalElement.elementName;
+        this._hasShadowRoot = !GlobalElement.disableShadowDOM;
+
+        let element = this;
 
         /** Add the styles directly into the shadow root & then append the rendered template **/
         // $FlowIgnore: Not part of Flow type yet
-        this.createShadowRoot().innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
+        if(this._hasShadowRoot) {
+            element = this.createShadowRoot();
+        }
+
+        element.innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
     }
 
     /**
@@ -326,13 +347,20 @@ class Element extends HTMLElement {
      */
     updateElement (updatedElement: HTMLElement, updatedStylesheet: Object) {
 
+        let hasShadowDom = this._hasShadowRoot;
+        let element = this;
+
+        if(hasShadowDom) {
+            element = this.shadowRoot;
+        }
+
         /** Only update if we were passed data **/
         if(undefined !== updatedElement) this.element = updatedElement;
         if(undefined !== updatedElement) this.stylesheet = updatedStylesheet;
 
         /** If we've triggered a hasUpdated method **/
         // $FlowIgnore: Not part of Flow type yet
-        if (this.hasUpdated) this.shadowRoot.innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
+        if (this.hasUpdated) element.innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
 
     }
 

@@ -1,16 +1,16 @@
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["exports", "backbone.radio", "marionette"], factory);
+        define(["exports", "backbone.radio", "backbone.marionette"], factory);
     } else if (typeof exports !== "undefined") {
-        factory(exports, require("backbone.radio"), require("marionette"));
+        factory(exports, require("backbone.radio"), require("backbone.marionette"));
     } else {
         var mod = {
             exports: {}
         };
-        factory(mod.exports, global.backbone, global.marionette);
+        factory(mod.exports, global.backbone, global.backbone);
         global.index = mod.exports;
     }
-})(this, function (exports, _backbone, _marionette) {
+})(this, function (exports, _backbone, _backbone3) {
     "use strict";
 
     Object.defineProperty(exports, "__esModule", {
@@ -21,7 +21,7 @@
 
     var _backbone2 = _interopRequireDefault(_backbone);
 
-    var _marionette2 = _interopRequireDefault(_marionette);
+    var _backbone4 = _interopRequireDefault(_backbone3);
 
     function _interopRequireDefault(obj) {
         return obj && obj.__esModule ? obj : {
@@ -123,11 +123,6 @@
          * @param localRegistrationName {String} The unique identifier for this component
          * @param options {Object} Optional settings
          */
-
-
-        /**
-         * Setup types for variables.
-         */
         function Component(elementName, localRegistrationName, options) {
             _classCallCheck(this, Component);
 
@@ -151,6 +146,11 @@
          * @param element {Object} The pass through object for constructing the Component View.
          * @param stylesheet {Object} The stylesheet for your encapsulated component.
          * @param state {Object} The state object
+         */
+
+
+        /**
+         * Setup types for variables.
          */
 
 
@@ -302,12 +302,11 @@
                 var element = this;
 
                 /** Add the styles directly into the shadow root & then append the rendered template **/
-                // $FlowIgnore: Not part of Flow type yet
                 if (this._hasShadowRoot) {
                     element = this.createShadowRoot();
                 }
 
-                element.innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element;
+                element.innerHTML = "<style>" + this.stylesheet.toString() + "</style>" + this.element.toString();
             }
         }, {
             key: "attachedCallback",
@@ -331,11 +330,11 @@
         }, {
             key: "updateElement",
             value: function updateElement(updatedElement, updatedStylesheet) {
-
                 var hasShadowDom = this._hasShadowRoot;
                 var element = this;
 
                 if (hasShadowDom) {
+                    /* $FlowIgnore: shadowRoot is spec compliant */
                     element = this.shadowRoot;
                 }
 
@@ -475,12 +474,15 @@
 
                 this._componentChannels[localCompName] = componentObject.radioChannel || {};
 
+                var elAppend = el.appendChild;
+
                 /** Append the returned element to the DOM **/
                 if (undefined !== el.jquery) {
-                    el.append(local);
-                } else {
-                    el.appendChild(local);
+                    /* $FlowIgnore: Support jQuery */
+                    elAppend = el.append;
                 }
+
+                elAppend(local);
 
                 return localCompName;
             }
@@ -522,5 +524,5 @@
         }]);
 
         return View;
-    }(_marionette2.default.View);
+    }(_backbone4.default.View);
 });

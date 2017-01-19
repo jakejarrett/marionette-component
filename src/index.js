@@ -2,7 +2,7 @@
 
 /** Only real dependency atm is backbone radio. **/
 import Radio from "backbone.radio";
-import Marionette from "marionette";
+import Marionette from "backbone.marionette";
 
 /**
  * Event decorator
@@ -46,9 +46,10 @@ export class Component {
      * Setup types for variables.
      */
     radioChannel: Object;
+    elementChannel: Object;
     state: Object;
     events: Object;
-    __disableShadowDOM: Boolean = false;
+    __disableShadowDOM: boolean = false;
 
     /**
      * Constructor
@@ -196,6 +197,8 @@ class Element extends HTMLElement {
     _previousStylesheet: Object;
     _stylesheet: Object;
     _updated: boolean;
+    _hasShadowRoot: boolean;
+    createShadowRoot: Function;
 
     /**
      * Set the element
@@ -301,12 +304,11 @@ class Element extends HTMLElement {
         let element = this;
 
         /** Add the styles directly into the shadow root & then append the rendered template **/
-        // $FlowIgnore: Not part of Flow type yet
         if(this._hasShadowRoot) {
             element = this.createShadowRoot();
         }
 
-        element.innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element}`;
+        element.innerHTML = `<style>${this.stylesheet.toString()}</style>${this.element.toString()}`;
     }
 
     /**
@@ -346,11 +348,11 @@ class Element extends HTMLElement {
      * @public
      */
     updateElement (updatedElement: HTMLElement, updatedStylesheet: Object) {
-
         let hasShadowDom = this._hasShadowRoot;
         let element = this;
 
         if(hasShadowDom) {
+            /* $FlowIgnore: shadowRoot is spec compliant */
             element = this.shadowRoot;
         }
 
@@ -397,7 +399,7 @@ export class View extends Marionette.View {
      * @param el {HTMLElement|jQuery} Container/Element you're putting the component into.
      * @param properties {Object} Properties you wish to apply to the component.
      */
-    registerComponent (componentRegistrar, componentName, component, el, properties) {
+    registerComponent (componentRegistrar: Object, componentName: string, component: HTMLElement, el: HTMLElement, properties: Object) {
         let localCompName;
 
         /** Conflict detection **/
@@ -426,12 +428,15 @@ export class View extends Marionette.View {
 
         this._componentChannels[localCompName] = componentObject.radioChannel || {};
 
+        let elAppend = el.appendChild;
+
         /** Append the returned element to the DOM **/
         if(undefined !== el.jquery) {
-            el.append(local);
-        } else {
-            el.appendChild(local);
+            /* $FlowIgnore: Support jQuery */
+            elAppend = el.append;
         }
+
+        elAppend(local);
 
         return localCompName;
     }

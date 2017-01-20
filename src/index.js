@@ -29,6 +29,19 @@ export function on(eventName: string) {
     };
 }
 
+/**
+ *
+ * @param message
+ * @constructor
+ */
+function SpecificationCompliantError(message) {
+    this.name = "SpecificationCompliantError";
+    this.message = message || "The given custom element is not spec compliant";
+    this.stack = (new Error()).stack;
+}
+SpecificationCompliantError.prototype = Object.create(Error.prototype);
+SpecificationCompliantError.prototype.constructor = SpecificationCompliantError;
+
 // Provide context from one class to another
 var GlobalElement: Object;
 
